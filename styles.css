@@ -185,6 +185,7 @@ a:hover {
 }
 
 .btn-primary:hover {
+  color: #1a140c;
   transform: translateY(-1px);
   filter: brightness(1.05);
 }
@@ -196,6 +197,7 @@ a:hover {
 }
 
 .btn-ghost:hover {
+  color: var(--foam);
   background: rgba(244, 239, 230, 0.08);
   border-color: rgba(212, 180, 131, 0.5);
 }
