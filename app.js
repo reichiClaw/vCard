@@ -14,7 +14,53 @@
     qrCaption: document.getElementById("qr-caption"),
     detailList: document.getElementById("detail-list"),
     footerName: document.getElementById("footer-name"),
+    cardInitials: document.getElementById("card-initials"),
+    cardName: document.getElementById("card-name"),
+    cardTag: document.getElementById("card-tag"),
+    cardRows: document.getElementById("card-rows"),
+    toast: document.getElementById("toast"),
   };
+
+  const ICONS = {
+    email:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>',
+    phone:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l1.5 4.5L8 10a12 12 0 0 0 6 6l1.5-2.5L20 15v4a1.5 1.5 0 0 1-1.7 1.5C10.6 19.6 4.4 13.4 3.5 5.7A1.5 1.5 0 0 1 5 4Z"/></svg>',
+    web:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.7 2.6 4 5.7 4 9s-1.3 6.4-4 9c-2.7-2.6-4-5.7-4-9s1.3-6.4 4-9Z"/></svg>',
+    github:
+      '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
+  };
+
+  let toastTimer = 0;
+
+  /**
+   * @param {string} message
+   */
+  function showToast(message) {
+    if (!els.toast) return;
+    els.toast.textContent = message;
+    els.toast.hidden = false;
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      els.toast.hidden = true;
+    }, 1800);
+  }
+
+  /**
+   * @param {string} text
+   * @param {string} doneMessage
+   */
+  async function copyToClipboard(text, doneMessage) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(doneMessage);
+      return true;
+    } catch {
+      showToast("Copy failed — select the text manually");
+      return false;
+    }
+  }
 
   /** @typedef {"ios"|"android"|"macos"|"windows"|"linux"|"other"} Platform */
 
@@ -262,6 +308,78 @@
   /**
    * @param {Record<string, string>} contact
    */
+  function renderCard(contact) {
+    const name =
+      contact.displayName ||
+      `${contact.firstName || ""} ${contact.lastName || ""}`.trim();
+
+    if (els.cardName) els.cardName.textContent = name || "Contact";
+    if (els.cardInitials) {
+      const initials = [contact.firstName, contact.lastName]
+        .map((part) => (part || "").trim().charAt(0).toUpperCase())
+        .join("");
+      els.cardInitials.textContent = initials || (name || "?").charAt(0).toUpperCase();
+    }
+    if (els.cardTag) {
+      els.cardTag.textContent =
+        [contact.title, contact.organization].filter(Boolean).join(" · ") ||
+        (contact.website || "").replace(/^https?:\/\//, "") ||
+        "Contact";
+    }
+
+    if (!els.cardRows) return;
+    /** @type {{ icon: string, text: string, href?: string }[]} */
+    const rows = [];
+    if (contact.email) {
+      rows.push({ icon: ICONS.email, text: contact.email, href: `mailto:${contact.email}` });
+    }
+    if (contact.phone) {
+      rows.push({
+        icon: ICONS.phone,
+        text: contact.phone,
+        href: `tel:${contact.phone.replace(/[^\d+]/g, "")}`,
+      });
+    }
+    if (contact.website) {
+      rows.push({
+        icon: ICONS.web,
+        text: contact.website.replace(/^https?:\/\//, ""),
+        href: contact.website,
+      });
+    }
+    if (contact.github) {
+      rows.push({
+        icon: ICONS.github,
+        text: contact.github.replace(/^https?:\/\/(www\.)?/, ""),
+        href: contact.github,
+      });
+    }
+
+    els.cardRows.innerHTML = "";
+    for (const row of rows) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = row.href || "#";
+      if ((row.href || "").startsWith("http")) {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+      const icon = document.createElement("span");
+      icon.className = "row-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML = row.icon;
+      const text = document.createElement("span");
+      text.className = "row-text";
+      text.textContent = row.text;
+      a.append(icon, text);
+      li.appendChild(a);
+      els.cardRows.appendChild(li);
+    }
+  }
+
+  /**
+   * @param {Record<string, string>} contact
+   */
   function renderDetails(contact) {
     /** @type {{ label: string, value: string, href?: string, copy?: string }[]} */
     const rows = [];
@@ -336,19 +454,8 @@
         btn.type = "button";
         btn.className = "copy-btn";
         btn.textContent = "Copy";
-        btn.addEventListener("click", async () => {
-          try {
-            await navigator.clipboard.writeText(row.copy);
-            btn.textContent = "Copied";
-            window.setTimeout(() => {
-              btn.textContent = "Copy";
-            }, 1400);
-          } catch {
-            btn.textContent = "Failed";
-            window.setTimeout(() => {
-              btn.textContent = "Copy";
-            }, 1400);
-          }
+        btn.addEventListener("click", () => {
+          copyToClipboard(row.copy, `${row.label} copied`);
         });
         li.appendChild(btn);
       }
@@ -408,19 +515,8 @@
       bindCta(els.secondaryCta, {
         label: "Copy details",
         className: "btn btn-ghost",
-        onClick: async () => {
-          try {
-            await navigator.clipboard.writeText(contactPlainText(contact));
-            els.secondaryCta.textContent = "Copied";
-            window.setTimeout(() => {
-              els.secondaryCta.textContent = "Copy details";
-            }, 1400);
-          } catch {
-            els.secondaryCta.textContent = "Copy failed";
-            window.setTimeout(() => {
-              els.secondaryCta.textContent = "Copy details";
-            }, 1400);
-          }
+        onClick: () => {
+          copyToClipboard(contactPlainText(contact), "Contact details copied");
         },
       });
       els.platformHint.textContent =
@@ -496,6 +592,7 @@
 
     els.footerName.textContent = contact.displayName || "Contact";
     document.title = `${contact.displayName || "Contact"} — reichi.id`;
+    renderCard(contact);
     renderDetails(contact);
     configurePlatform(platform, contact, vcard);
 
