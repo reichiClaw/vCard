@@ -118,15 +118,9 @@
   /**
    * @param {string} vcard
    * @param {string} filename
-   * @param {"open"|"download"|"hosted"} mode
+   * @param {"open"|"download"} mode
    */
   function deliverVCard(vcard, filename, mode) {
-    if (mode === "hosted") {
-      // Prefer the static file so Android can offer an "Open with Contacts" intent.
-      window.location.href = new URL("contact.vcf", window.location.href).href;
-      return;
-    }
-
     const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
     const url = URL.createObjectURL(blob);
 
@@ -144,6 +138,99 @@
     a.click();
     a.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
+  /**
+   * Encode a string intent extra. Values must not contain raw ';' (delimiter).
+   * @param {string} value
+   */
+  function encodeIntentExtra(value) {
+    return encodeURIComponent(String(value));
+  }
+
+  /**
+   * Build a Chrome/Android Intent URI that opens the native "Add contact" editor
+   * pre-filled — no .vcf download. See ContactsContract.Intents.Insert.
+   * @param {Record<string, string>} contact
+   */
+  function buildAndroidInsertIntent(contact) {
+    /** @type {string[]} */
+    const parts = ["action=android.intent.action.INSERT"];
+
+    const name =
+      contact.displayName ||
+      `${contact.firstName || ""} ${contact.lastName || ""}`.trim();
+    if (name) parts.push(`S.name=${encodeIntentExtra(name)}`);
+    if (contact.phone) parts.push(`S.phone=${encodeIntentExtra(contact.phone)}`);
+    if (contact.email) parts.push(`S.email=${encodeIntentExtra(contact.email)}`);
+    if (contact.organization) {
+      parts.push(`S.company=${encodeIntentExtra(contact.organization)}`);
+    }
+    if (contact.title) {
+      parts.push(`S.job_title=${encodeIntentExtra(contact.title)}`);
+    }
+
+    const noteBits = [];
+    if (contact.website) noteBits.push(contact.website);
+    if (contact.github) noteBits.push(contact.github);
+    if (contact.note) noteBits.push(contact.note);
+    if (noteBits.length) {
+      parts.push(`S.notes=${encodeIntentExtra(noteBits.join("\n"))}`);
+    }
+
+    // If the intent cannot run (non-Chrome, blocked, etc.), land on the details.
+    const fallback = encodeURIComponent(
+      `${location.origin}${location.pathname}#details`
+    );
+    parts.push(`S.browser_fallback_url=${fallback}`);
+
+    // Path carries RawContacts.CONTENT_TYPE; extras prefill the editor.
+    // Requires a user gesture (anchor tap). Works in Chrome / most WebViews.
+    return `intent://vnd.android.cursor.dir/raw_contact/#Intent;${parts.join(
+      ";"
+    )};end`;
+  }
+
+  /**
+   * @param {Record<string, string>} contact
+   */
+  function contactPlainText(contact) {
+    return [
+      contact.displayName ||
+        `${contact.firstName || ""} ${contact.lastName || ""}`.trim(),
+      contact.phone,
+      contact.email,
+      contact.website,
+      contact.github,
+      contact.organization,
+      contact.title,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  /**
+   * Wire a CTA anchor: either a real href (Android intent) or a click handler.
+   * @param {HTMLAnchorElement} el
+   * @param {{ label: string, href?: string, onClick?: (e: Event) => void, className: string, hidden?: boolean }} opts
+   */
+  function bindCta(el, opts) {
+    el.hidden = Boolean(opts.hidden);
+    el.className = opts.className;
+    el.textContent = opts.label;
+    el.removeAttribute("aria-disabled");
+
+    if (opts.href) {
+      el.href = opts.href;
+      el.onclick = opts.onClick || null;
+      return;
+    }
+
+    el.href = "#";
+    el.onclick = (e) => {
+      e.preventDefault();
+      opts.onClick?.(e);
+    };
   }
 
   /**
@@ -286,35 +373,58 @@
 
     els.ctaGroup.hidden = false;
     els.platformHint.hidden = false;
-    els.secondaryCta.hidden = true;
-    els.primaryCta.className = "btn btn-primary";
-    els.secondaryCta.className = "btn btn-ghost";
 
     if (platform === "ios") {
       els.headline.textContent = "Add me to your contacts";
       els.lede.textContent =
         "On iPhone and iPad, this opens as a contact card you can save in one step.";
-      els.primaryCta.textContent = "Add to Contacts";
-      els.primaryCta.onclick = () => deliverVCard(vcard, filename, "open");
+      bindCta(els.primaryCta, {
+        label: "Add to Contacts",
+        className: "btn btn-primary",
+        onClick: () => deliverVCard(vcard, filename, "open"),
+      });
+      bindCta(els.secondaryCta, {
+        label: "",
+        className: "btn btn-ghost",
+        hidden: true,
+      });
       els.platformHint.textContent =
         "Safari will show Create New Contact / Add to Existing Contact.";
-      // Keep the monogram dominant on iOS — native vCard sheet is the path.
       return;
     }
 
     if (platform === "android") {
-      // QR on the same phone is a poor primary path — you can't usefully scan your own screen.
-      // Best on-device options: open/download the .vcf so Android can hand it to Contacts.
-      els.headline.textContent = "Save my contact";
+      // .vcf downloads on Android do not open a save sheet. Use an INSERT intent
+      // so Chrome opens the native Contacts editor pre-filled.
+      const intentUrl = buildAndroidInsertIntent(contact);
+      els.headline.textContent = "Add me to your contacts";
       els.lede.textContent =
-        "On Android, tap Save to open the contact file. If Chrome downloads it, open the file with Contacts.";
-      els.primaryCta.textContent = "Save contact";
-      els.primaryCta.onclick = () => deliverVCard(vcard, filename, "hosted");
-      els.secondaryCta.hidden = false;
-      els.secondaryCta.textContent = "Download .vcf";
-      els.secondaryCta.onclick = () => deliverVCard(vcard, filename, "download");
+        "On Android, this opens the Contacts app with my details already filled in — then tap Save.";
+      bindCta(els.primaryCta, {
+        label: "Add to Contacts",
+        className: "btn btn-primary",
+        href: intentUrl,
+      });
+      bindCta(els.secondaryCta, {
+        label: "Copy details",
+        className: "btn btn-ghost",
+        onClick: async () => {
+          try {
+            await navigator.clipboard.writeText(contactPlainText(contact));
+            els.secondaryCta.textContent = "Copied";
+            window.setTimeout(() => {
+              els.secondaryCta.textContent = "Copy details";
+            }, 1400);
+          } catch {
+            els.secondaryCta.textContent = "Copy failed";
+            window.setTimeout(() => {
+              els.secondaryCta.textContent = "Copy details";
+            }, 1400);
+          }
+        },
+      });
       els.platformHint.textContent =
-        "Browsers can’t write to Android Contacts directly. Opening the .vcf is the most reliable on-device path. QR is for when this page is on another screen.";
+        "Uses Android’s Add Contact screen (Chrome). No .vcf file. If your browser blocks it, copy the details below.";
       return;
     }
 
@@ -329,14 +439,19 @@
 
     els.headline.textContent = "Save my contact card";
     els.lede.textContent = `On ${osName}, download the vCard for your contacts app — or scan the QR with your phone.`;
-    els.primaryCta.textContent = "Download .vcf";
-    els.primaryCta.onclick = () => deliverVCard(vcard, filename, "download");
-    els.secondaryCta.hidden = false;
-    els.secondaryCta.textContent = "Show QR for phone";
-    els.secondaryCta.onclick = () => {
-      showQr();
-      els.qrCaption.textContent = "Scan with your phone camera";
-    };
+    bindCta(els.primaryCta, {
+      label: "Download .vcf",
+      className: "btn btn-primary",
+      onClick: () => deliverVCard(vcard, filename, "download"),
+    });
+    bindCta(els.secondaryCta, {
+      label: "Show QR for phone",
+      className: "btn btn-ghost",
+      onClick: () => {
+        showQr();
+        els.qrCaption.textContent = "Scan with your phone camera";
+      },
+    });
     els.platformHint.textContent =
       platform === "macos"
         ? "The .vcf opens in Contacts.app. Prefer saving on your phone? Use the QR."

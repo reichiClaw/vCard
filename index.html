@@ -46,8 +46,8 @@
         </p>
 
         <div class="cta-group" id="cta-group" hidden>
-          <button type="button" class="btn btn-primary" id="primary-cta"></button>
-          <button type="button" class="btn btn-ghost" id="secondary-cta" hidden></button>
+          <a class="btn btn-primary" id="primary-cta" href="#" role="button"></a>
+          <a class="btn btn-ghost" id="secondary-cta" href="#" role="button" hidden></a>
         </div>
 
         <p class="platform-hint" id="platform-hint" hidden></p>
@@ -80,9 +80,9 @@
         <div>
           <dt>Android</dt>
           <dd>
-            Tap <strong>Save contact</strong> to open the <code>.vcf</code>. Android may offer Contacts immediately;
-            if Chrome only downloads it, open the file from the download notification with Contacts.
-            A QR on this same phone isn’t useful — you can’t scan your own screen. Use the QR when the page is open on a computer.
+            Tap <strong>Add to Contacts</strong>. Chrome opens Android’s native contact editor pre-filled
+            via an <code>INSERT</code> intent — no <code>.vcf</code> download. (Works in Chrome / most WebViews;
+            other browsers may fall back to copying details.)
           </dd>
         </div>
         <div>

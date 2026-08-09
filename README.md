@@ -7,7 +7,7 @@ Fast, static contact page for [reichi.id](https://reichi.id). It detects the vis
 | Platform | Best option | Why |
 | --- | --- | --- |
 | **iOS / iPadOS** | Tap **Add to Contacts** (vCard) | Safari opens a native contact sheet (`Create New Contact` / `Add to Existing Contact`). |
-| **Android (on the phone)** | **Save / open the `.vcf`** | The web can’t write Contacts directly. Opening `contact.vcf` lets Android hand the file to Contacts (or download → open with Contacts). A QR *on the same phone* is a weak primary path — you can’t scan your own screen. |
+| **Android (on the phone)** | **Android `INSERT` intent** | `.vcf` files only download on Android — they do not open a save sheet. Chrome can launch `android.intent.action.INSERT` with `S.name` / `S.email` / `S.phone` extras so the native Contacts editor opens pre-filled. Fallback: copy details. |
 | **Desktop → phone** | **Scan the QR** | QR shines when this page is on a laptop/monitor and the phone’s camera does the save. |
 | **macOS** | Download `.vcf` | Opens in Contacts.app. QR is offered for saving onto a phone. |
 | **Windows** | Download `.vcf` | Opens in People / Outlook. QR for phone save. |
