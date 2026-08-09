@@ -377,11 +377,11 @@
     if (platform === "ios") {
       els.headline.textContent = "Add me to your contacts";
       els.lede.textContent =
-        "On iPhone and iPad, this opens as a contact card you can save in one step.";
+        "On iPhone and iPad, Safari opens this as a contact card you can save in one step.";
       bindCta(els.primaryCta, {
         label: "Add to Contacts",
         className: "btn btn-primary",
-        onClick: () => deliverVCard(vcard, filename, "open"),
+        href: new URL("contact.vcf", location.href).href,
       });
       bindCta(els.secondaryCta, {
         label: "",
@@ -389,7 +389,7 @@
         hidden: true,
       });
       els.platformHint.textContent =
-        "Safari will show Create New Contact / Add to Existing Contact.";
+        "Normally iOS opens the card automatically when you visit reichi.id. Use this button if you landed on the page view.";
       return;
     }
 
@@ -463,13 +463,36 @@
   }
 
   async function init() {
+    const params = new URLSearchParams(location.search);
+    const forcePage =
+      params.has("page") ||
+      params.has("html") ||
+      params.get("view") === "page";
+    const { platform } = detectPlatform();
+
+    // iOS: jump straight to the vCard so Safari shows the native sheet.
+    // On Cloudflare, Pages middleware does this at the edge for iPhone/iPad UAs.
+    // This client path covers local preview and iPadOS that reports as Macintosh.
+    if (
+      platform === "ios" &&
+      !forcePage &&
+      !params.has("download") &&
+      !params.has("vcf")
+    ) {
+      els.headline.textContent = "Opening contact…";
+      els.lede.textContent = "Safari is loading the contact card.";
+      els.ctaGroup.hidden = true;
+      els.platformHint.hidden = true;
+      window.location.replace(new URL("contact.vcf", location.href).href);
+      return;
+    }
+
     const response = await fetch("./contact.json", { cache: "no-cache" });
     if (!response.ok) {
       throw new Error(`Failed to load contact.json (${response.status})`);
     }
     const contact = await response.json();
     const vcard = buildVCard(contact);
-    const { platform } = detectPlatform();
 
     els.footerName.textContent = contact.displayName || "Contact";
     document.title = `${contact.displayName || "Contact"} — reichi.id`;
@@ -477,9 +500,12 @@
     configurePlatform(platform, contact, vcard);
 
     // Deep link helpers: ?download=1 or ?vcf=1
-    const params = new URLSearchParams(location.search);
     if (params.has("download") || params.has("vcf")) {
-      deliverVCard(vcard, contact.filename || "contact.vcf", platform === "ios" ? "open" : "download");
+      deliverVCard(
+        vcard,
+        contact.filename || "contact.vcf",
+        platform === "ios" ? "open" : "download"
+      );
     }
   }
 

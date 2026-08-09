@@ -6,7 +6,7 @@ Fast, static contact page for [reichi.id](https://reichi.id). It detects the vis
 
 | Platform | Best option | Why |
 | --- | --- | --- |
-| **iOS / iPadOS** | Tap **Add to Contacts** (vCard) | Safari opens a native contact sheet (`Create New Contact` / `Add to Existing Contact`). |
+| **iOS / iPadOS** | **Auto-served `.vcf`** at `/` | Cloudflare Pages middleware (and a client fallback) serves `contact.vcf` immediately so Safari opens the native contact sheet — no button. Use [`/?page=1`](./?page=1) to see the HTML page on iOS. |
 | **Android (on the phone)** | **Android `INSERT` intent** | `.vcf` files only download on Android — they do not open a save sheet. Chrome can launch `android.intent.action.INSERT` with `S.name` / `S.email` / `S.phone` extras so the native Contacts editor opens pre-filled. Fallback: copy details. |
 | **Desktop → phone** | **Scan the QR** | QR shines when this page is on a laptop/monitor and the phone’s camera does the save. |
 | **macOS** | Download `.vcf` | Opens in Contacts.app. QR is offered for saving onto a phone. |
@@ -64,10 +64,13 @@ If `reichi.id` was already on Cloudflare for something else, either:
 
 ### 4. Verify
 
-- `https://reichi.id/` — contact page  
-- `https://reichi.id/contact.vcf` — should be `Content-Type: text/vcard` (from `_headers`)  
+- `https://reichi.id/` on **iPhone** — should open the contact sheet directly (Pages Function in `functions/_middleware.js`)  
+- `https://reichi.id/?page=1` — HTML page even on iOS  
+- `https://reichi.id/contact.vcf` — `Content-Type: text/vcard` (from `_headers`)  
 - Android Chrome: **Add to Contacts** opens the native editor  
-- iOS Safari: **Add to Contacts** opens the contact sheet  
+- Desktop: branded page + download / QR  
+
+Pages Functions must be enabled for the project (default when a `functions/` folder is present).
 
 ### CLI alternative (Wrangler)
 
