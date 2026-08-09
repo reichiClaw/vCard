@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1210" />
+    <meta
+      name="description"
+      content="Save Christian Reichinger’s contact card from reichi.id — optimized for iOS, Android, and desktop."
+    />
+    <meta property="og:title" content="reichi.id — Save contact" />
+    <meta
+      property="og:description"
+      content="Add Christian Reichinger to your contacts in one step."
+    />
+    <meta property="og:url" content="https://reichi.id/" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://reichi.id/" />
+    <title>reichi.id — Save contact</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b1210'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='%23d4b483'%3Er%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="grain"></div>
+    </div>
+
+    <header class="top">
+      <a class="brand-mark" href="/" aria-label="reichi.id home">reichi.id</a>
+    </header>
+
+    <main class="hero">
+      <div class="hero-copy">
+        <p class="brand" id="brand">reichi.id</p>
+        <h1 id="headline">Add me to your contacts</h1>
+        <p class="lede" id="lede">
+          One clean contact card — presented the way your device saves best.
+        </p>
+
+        <div class="cta-group" id="cta-group" hidden>
+          <button type="button" class="btn btn-primary" id="primary-cta"></button>
+          <button type="button" class="btn btn-ghost" id="secondary-cta" hidden></button>
+        </div>
+
+        <p class="platform-hint" id="platform-hint" hidden></p>
+      </div>
+
+      <aside class="hero-visual" aria-label="Contact preview">
+        <div class="monogram" aria-hidden="true">R</div>
+        <div class="qr-panel" id="qr-panel" hidden>
+          <div id="qrcode" class="qrcode" role="img" aria-label="QR code for contact card"></div>
+          <p class="qr-caption" id="qr-caption">Scan to save</p>
+        </div>
+      </aside>
+    </main>
+
+    <section class="details" id="details" aria-label="Contact details">
+      <h2>Contact</h2>
+      <ul class="detail-list" id="detail-list"></ul>
+    </section>
+
+    <section class="guide" id="guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">Best way by device</h2>
+      <p class="guide-lede">
+        Safari on iPhone can open a vCard as a native contact sheet. Other platforms need a slightly different path.
+      </p>
+      <dl class="guide-list">
+        <div>
+          <dt>iPhone / iPad</dt>
+          <dd>Tap <strong>Add to Contacts</strong>. Safari opens the card so you can save it directly.</dd>
+        </div>
+        <div>
+          <dt>Android</dt>
+          <dd>
+            Best option: scan the QR with your Camera app, then tap <strong>Add contact</strong>.
+            Downloading a <code>.vcf</code> also works, but Chrome usually saves the file first instead of opening a contact preview.
+          </dd>
+        </div>
+        <div>
+          <dt>macOS / Windows / Linux</dt>
+          <dd>
+            Download the <code>.vcf</code> and open it with Contacts, People, Outlook, or your desktop contact app.
+            Or scan the QR with your phone to save it there.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <footer class="footer">
+      <p><span id="footer-name">Christian Reichinger</span> · <a href="https://reichi.id">reichi.id</a></p>
+    </footer>
+
+    <script src="./lib/qrcode.min.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

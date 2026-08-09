@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//reichi.id//contact//EN
+N:Reichinger;Christian;;;
+FN:Christian Reichinger
+EMAIL;TYPE=INTERNET:reichi@reichi.com
+URL:https://reichi.id
+URL:https://github.com/reichiClaw
+UID:urn:uuid:reichi-id-contact
+REV:2026-08-09T00:00:00Z
+END:VCARD
