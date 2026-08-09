@@ -118,9 +118,15 @@
   /**
    * @param {string} vcard
    * @param {string} filename
-   * @param {"open"|"download"} mode
+   * @param {"open"|"download"|"hosted"} mode
    */
   function deliverVCard(vcard, filename, mode) {
+    if (mode === "hosted") {
+      // Prefer the static file so Android can offer an "Open with Contacts" intent.
+      window.location.href = new URL("contact.vcf", window.location.href).href;
+      return;
+    }
+
     const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
     const url = URL.createObjectURL(blob);
 
@@ -297,17 +303,18 @@
     }
 
     if (platform === "android") {
-      els.headline.textContent = "Scan to save my contact";
+      // QR on the same phone is a poor primary path — you can't usefully scan your own screen.
+      // Best on-device options: open/download the .vcf so Android can hand it to Contacts.
+      els.headline.textContent = "Save my contact";
       els.lede.textContent =
-        "Android browsers usually download vCards instead of opening a contact sheet. Scanning the QR is the fastest path.";
-      // QR in the hero is the primary action; download is the fallback control.
-      els.primaryCta.className = "btn btn-ghost";
-      els.primaryCta.textContent = "Download .vcf instead";
-      els.primaryCta.onclick = () => deliverVCard(vcard, filename, "download");
+        "On Android, tap Save to open the contact file. If Chrome downloads it, open the file with Contacts.";
+      els.primaryCta.textContent = "Save contact";
+      els.primaryCta.onclick = () => deliverVCard(vcard, filename, "hosted");
+      els.secondaryCta.hidden = false;
+      els.secondaryCta.textContent = "Download .vcf";
+      els.secondaryCta.onclick = () => deliverVCard(vcard, filename, "download");
       els.platformHint.textContent =
-        "Best on Android: open Camera, scan the QR, then tap Add contact. Download is a fallback — open the .vcf with Contacts afterward.";
-      showQr();
-      els.qrCaption.textContent = "Open Camera → scan → Add contact";
+        "Browsers can’t write to Android Contacts directly. Opening the .vcf is the most reliable on-device path. QR is for when this page is on another screen.";
       return;
     }
 
