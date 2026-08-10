@@ -433,21 +433,21 @@
       onClick: () => {
         showQr();
         if (els.qrCaption) {
-          els.qrCaption.textContent = "Open your camera and point it here.";
+          els.qrCaption.textContent = "Scan with your phone camera";
         }
-        document.getElementById("qr")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        els.qrPanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
       },
     });
     els.platformHint.textContent =
       platform === "macos"
-        ? "Opens in Contacts.app. Prefer your phone? Scan the QR below."
+        ? "Opens in Contacts.app. Prefer your phone? Scan the QR."
         : platform === "windows"
-          ? "Opens in People / Outlook. Prefer your phone? Scan the QR below."
-          : "Open the .vcf in your contacts app, or scan the QR below.";
+          ? "Opens in People / Outlook. Prefer your phone? Scan the QR."
+          : "Open the .vcf in your contacts app, or scan the QR.";
     showQr();
+    if (els.qrCaption) {
+      els.qrCaption.textContent = "Scan with your phone camera";
+    }
   }
 
   async function init() {

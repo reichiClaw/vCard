@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -61,10 +61,16 @@
         <p class="platform-hint" id="platform-hint" hidden></p>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
+      <div class="hero-visual" aria-label="Contact visual">
         <div class="visual-plane">
-          <span class="visual-mark">R</span>
-          <span class="visual-name" id="visual-name">Christian Reichinger</span>
+          <span class="visual-mark" aria-hidden="true">R</span>
+          <div class="visual-footer">
+            <span class="visual-name" id="visual-name">Christian Reichinger</span>
+            <div class="qr-panel" id="qr-panel" hidden>
+              <div id="qrcode" class="qrcode" role="img" aria-label="QR code for contact card"></div>
+              <p class="qr-caption" id="qr-caption">Scan with your phone camera</p>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -75,16 +81,6 @@
         <p>Tap to open, or copy any field.</p>
       </div>
       <ul class="detail-list" id="detail-list"></ul>
-    </section>
-
-    <section class="qr-section" id="qr" aria-labelledby="qr-title">
-      <div class="section-head">
-        <h2 id="qr-title">Scan from your phone</h2>
-        <p id="qr-caption">Open your camera and point it here.</p>
-      </div>
-      <div class="qr-panel" id="qr-panel" hidden>
-        <div id="qrcode" class="qrcode" role="img" aria-label="QR code for contact card"></div>
-      </div>
     </section>
 
     <section class="guide" id="guide" aria-labelledby="guide-title">

@@ -11,7 +11,7 @@
   --accent-soft: rgba(13, 148, 136, 0.12);
   --white: #ffffff;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --font-display: "Syne", "Avenir Next", sans-serif;
+  --font-display: "Archivo Black", "Arial Black", sans-serif;
   --font-body: "Manrope", "Helvetica Neue", sans-serif;
   --max: 1120px;
 }
@@ -134,9 +134,9 @@ a:hover {
 
 .top-brand {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 1.05rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   color: var(--ink);
   text-decoration: none;
 }
@@ -186,22 +186,22 @@ a:hover {
 .brand {
   margin: 0 0 1rem;
   font-family: var(--font-display);
-  font-size: clamp(3.4rem, 9vw, 6.5rem);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.055em;
+  font-size: clamp(3rem, 8vw, 5.8rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
   color: var(--ink);
   animation: rise 0.7s var(--ease) both;
 }
 
 .headline {
   margin: 0 0 0.85rem;
-  max-width: 14ch;
+  max-width: 18ch;
   font-family: var(--font-display);
-  font-size: clamp(1.55rem, 3.2vw, 2.2rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  font-size: clamp(1.4rem, 2.9vw, 1.95rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   color: var(--ink-soft);
   animation: rise 0.7s var(--ease) 0.06s both;
 }
@@ -306,38 +306,74 @@ a:hover {
   inset: 0;
   background:
     radial-gradient(80% 60% at 80% 10%, rgba(255, 255, 255, 0.2), transparent 55%),
-    linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.25) 100%);
+    linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.35) 100%);
   pointer-events: none;
 }
 
 .visual-mark {
   position: absolute;
-  top: 8%;
-  right: 4%;
+  top: 6%;
+  right: 2%;
   font-family: var(--font-display);
-  font-size: clamp(9rem, 28vw, 16rem);
-  font-weight: 800;
+  font-size: clamp(8rem, 24vw, 14rem);
+  font-weight: 400;
   line-height: 0.8;
-  letter-spacing: -0.08em;
-  opacity: 0.18;
+  letter-spacing: -0.03em;
+  opacity: 0.16;
   user-select: none;
 }
 
-.visual-name {
+.visual-footer {
   position: relative;
   z-index: 1;
+  display: grid;
+  gap: 1.25rem;
+  justify-items: start;
+}
+
+.visual-name {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  max-width: 10ch;
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  max-width: 12ch;
+}
+
+.qr-panel {
+  display: grid;
+  justify-items: start;
+  gap: 0.55rem;
+  animation: rise 0.55s var(--ease) both;
+}
+
+.qrcode {
+  width: min(188px, 46vw);
+  height: min(188px, 46vw);
+  padding: 0.7rem;
+  background: #ffffff;
+  border-radius: 14px;
+}
+
+.qrcode svg,
+.qrcode img,
+.qrcode canvas,
+.qrcode table {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.qr-caption {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 /* Sections */
 
 .details,
-.qr-section,
 .guide {
   max-width: var(--max);
   margin: 0 auto;
@@ -352,9 +388,9 @@ a:hover {
 .section-head h2 {
   margin: 0 0 0.4rem;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 1.9rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.4rem, 2.6vw, 1.75rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
 }
 
 .section-head p {
@@ -424,35 +460,6 @@ a:hover {
   color: var(--white);
 }
 
-/* QR */
-
-.qr-section:has(#qr-panel[hidden]) {
-  display: none;
-}
-
-.qr-panel {
-  display: grid;
-  justify-items: start;
-}
-
-.qrcode {
-  width: 196px;
-  height: 196px;
-  padding: 0.85rem;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-}
-
-.qrcode svg,
-.qrcode img,
-.qrcode canvas,
-.qrcode table {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
 /* Guide */
 
 .guide-list {
@@ -466,9 +473,9 @@ a:hover {
 .guide-list article h3 {
   margin: 0 0 0.45rem;
   font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .guide-list article p {
