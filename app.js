@@ -17,6 +17,11 @@
     visualName: document.getElementById("visual-name"),
     visualMeta: document.getElementById("visual-meta"),
     visualPhoto: document.getElementById("visual-photo"),
+    cardOrg: document.getElementById("card-org"),
+    cardPhone: document.getElementById("card-phone"),
+    cardEmail: document.getElementById("card-email"),
+    cardWeb: document.getElementById("card-web"),
+    cardNick: document.getElementById("card-nick"),
     toast: document.getElementById("toast"),
   };
 
@@ -514,7 +519,7 @@
       onClick: () => {
         showQr();
         if (els.qrCaption) {
-          els.qrCaption.textContent = "Scan with your phone camera";
+          els.qrCaption.textContent = "Scan to save";
         }
         els.qrPanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
       },
@@ -527,7 +532,7 @@
           : "Open the .vcf in your contacts app, or scan the QR.";
     showQr();
     if (els.qrCaption) {
-      els.qrCaption.textContent = "Scan with your phone camera";
+      els.qrCaption.textContent = "Scan to save";
     }
   }
 
@@ -570,6 +575,37 @@
         .filter(Boolean)
         .join(" · ");
       els.visualMeta.textContent = meta || contact.nickname || "reichi.id";
+    }
+    if (els.cardOrg) {
+      els.cardOrg.textContent = contact.organization || "reichi.id";
+    }
+    if (els.cardNick) {
+      els.cardNick.textContent = contact.nickname || "reichi";
+    }
+    if (els.cardPhone && contact.phone) {
+      const pretty = contact.phone.replace(
+        /^\+(\d{2})(\d{3})(\d+)$/,
+        "+$1 $2 $3"
+      );
+      els.cardPhone.textContent = pretty;
+      els.cardPhone.href = `tel:${contact.phone}`;
+    }
+    if (els.cardEmail) {
+      const email = contact.emailHome || contact.email || "";
+      if (email) {
+        els.cardEmail.textContent = email;
+        els.cardEmail.href = `mailto:${email}`;
+      }
+    }
+    if (els.cardWeb && contact.website) {
+      try {
+        const host = new URL(contact.website).hostname.replace(/^www\./, "");
+        els.cardWeb.textContent = host;
+        els.cardWeb.href = contact.website;
+      } catch {
+        els.cardWeb.textContent = contact.website;
+        els.cardWeb.href = contact.website;
+      }
     }
     if (els.visualPhoto) {
       els.visualPhoto.alt = name || "Contact photo";
