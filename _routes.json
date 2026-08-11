@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/assets/*",
+    "/lib/*",
+    "/contact.vcf",
+    "/contact.json",
+    "/styles.css",
+    "/app.js",
+    "/index.html",
+    "/_headers"
+  ]
+}

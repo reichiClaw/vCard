@@ -23,7 +23,8 @@
     "postalCode": "4971",
     "country": "Austria"
   },
-  "photo": "./assets/photo.jpg",
+  "photo": "/assets/photo.jpg",
+  "logo": "/assets/logo.png",
   "filename": "christian-reichinger.vcf",
   "note": ""
 }

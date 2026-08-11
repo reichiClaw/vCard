@@ -572,8 +572,14 @@
       els.visualMeta.textContent = meta || contact.nickname || "reichi.id";
     }
     if (els.visualPhoto && contact.photo) {
-      els.visualPhoto.src = contact.photo;
+      // Absolute site path avoids broken relative URLs on some hosts.
+      const photoSrc = contact.photo.startsWith("http")
+        ? contact.photo
+        : new URL(contact.photo, window.location.origin).pathname;
+      els.visualPhoto.src = photoSrc;
       els.visualPhoto.alt = name || "Contact photo";
+      els.visualPhoto.decoding = "async";
+      els.visualPhoto.loading = "eager";
     }
     document.title = `${name || "Contact"} — reichi.id`;
     renderDetails(contact);

@@ -14,3 +14,11 @@
 
 /assets/*
   Cache-Control: public, max-age=86400
+
+/assets/*.jpg
+  Content-Type: image/jpeg
+  Cache-Control: public, max-age=86400
+
+/assets/*.png
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400
