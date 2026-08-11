@@ -571,15 +571,20 @@
         .join(" · ");
       els.visualMeta.textContent = meta || contact.nickname || "reichi.id";
     }
-    if (els.visualPhoto && contact.photo) {
-      // Absolute site path avoids broken relative URLs on some hosts.
-      const photoSrc = contact.photo.startsWith("http")
-        ? contact.photo
-        : new URL(contact.photo, window.location.origin).pathname;
-      els.visualPhoto.src = photoSrc;
+    if (els.visualPhoto) {
       els.visualPhoto.alt = name || "Contact photo";
-      els.visualPhoto.decoding = "async";
-      els.visualPhoto.loading = "eager";
+      // Keep the inlined hero photo unless the hosted asset actually loads.
+      // (Some Cloudflare setups SPA-fallback missing assets to HTML.)
+      if (contact.photo && !String(contact.photo).startsWith("data:")) {
+        const photoSrc = contact.photo.startsWith("http")
+          ? contact.photo
+          : new URL(contact.photo, window.location.origin).href;
+        const probe = new Image();
+        probe.onload = () => {
+          els.visualPhoto.src = photoSrc;
+        };
+        probe.src = photoSrc;
+      }
     }
     document.title = `${name || "Contact"} — reichi.id`;
     renderDetails(contact);
