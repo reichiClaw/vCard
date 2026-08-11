@@ -15,6 +15,8 @@
     detailList: document.getElementById("detail-list"),
     footerName: document.getElementById("footer-name"),
     visualName: document.getElementById("visual-name"),
+    visualMeta: document.getElementById("visual-meta"),
+    visualPhoto: document.getElementById("visual-photo"),
     toast: document.getElementById("toast"),
   };
 
@@ -102,7 +104,9 @@
   }
 
   /**
-   * @param {Record<string, string>} contact
+   * Slim vCard for QR codes (no embedded photo — too large for QR).
+   * Full photo card is served from /contact.vcf.
+   * @param {Record<string, any>} contact
    */
   function buildVCard(contact) {
     const lines = [
@@ -113,16 +117,34 @@
       `FN:${escapeVCard(contact.displayName || `${contact.firstName} ${contact.lastName}`.trim())}`,
     ];
 
+    if (contact.nickname) lines.push(`NICKNAME:${escapeVCard(contact.nickname)}`);
     if (contact.organization) lines.push(`ORG:${escapeVCard(contact.organization)}`);
-    if (contact.title) lines.push(`TITLE:${escapeVCard(contact.title)}`);
+    if (contact.role || contact.title) {
+      lines.push(`TITLE:${escapeVCard(contact.role || contact.title)}`);
+    }
     if (contact.phone) {
       lines.push(`TEL;TYPE=${contact.phoneType || "CELL"}:${escapeVCard(contact.phone)}`);
     }
-    if (contact.email) lines.push(`EMAIL;TYPE=INTERNET:${escapeVCard(contact.email)}`);
+    const homeEmail = contact.emailHome || contact.email;
+    const workEmail = contact.emailWork;
+    if (homeEmail) lines.push(`EMAIL;TYPE=HOME,INTERNET:${escapeVCard(homeEmail)}`);
+    if (workEmail) lines.push(`EMAIL;TYPE=WORK,INTERNET:${escapeVCard(workEmail)}`);
     if (contact.website) lines.push(`URL:${escapeVCard(contact.website)}`);
+    if (contact.websiteWork) lines.push(`URL;TYPE=WORK:${escapeVCard(contact.websiteWork)}`);
     if (contact.github) lines.push(`URL:${escapeVCard(contact.github)}`);
+    if (contact.address) {
+      const a = contact.address;
+      lines.push(
+        `ADR;TYPE=HOME:;;${escapeVCard(a.street || "")};${escapeVCard(
+          a.city || ""
+        )};;${escapeVCard(a.postalCode || "")};${escapeVCard(a.country || "")}`
+      );
+    }
     if (contact.note) lines.push(`NOTE:${escapeVCard(contact.note)}`);
     if (contact.uid) lines.push(`UID:${escapeVCard(contact.uid)}`);
+    if (contact.birthday) {
+      lines.push(`BDAY:${escapeVCard(String(contact.birthday).replace(/-/g, ""))}`);
+    }
 
     lines.push(`REV:${new Date().toISOString().replace(/\.\d{3}Z$/, "Z")}`);
     lines.push("END:VCARD");
@@ -130,27 +152,26 @@
   }
 
   /**
+   * Prefer the static full vCard (includes photo). Fallback to generated blob.
    * @param {string} vcard
    * @param {string} filename
    * @param {"open"|"download"} mode
    */
   function deliverVCard(vcard, filename, mode) {
-    const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+    const hosted = new URL("contact.vcf", location.href).href;
 
     if (mode === "open") {
-      window.location.href = url;
+      window.location.href = hosted;
       return;
     }
 
     const a = document.createElement("a");
-    a.href = url;
+    a.href = hosted;
     a.download = filename || "contact.vcf";
     a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
     a.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
 
   /**
@@ -171,16 +192,27 @@
 
     if (name) parts.push(`S.name=${encodeIntentExtra(name)}`);
     if (contact.phone) parts.push(`S.phone=${encodeIntentExtra(contact.phone)}`);
-    if (contact.email) parts.push(`S.email=${encodeIntentExtra(contact.email)}`);
+    const email = contact.emailHome || contact.email;
+    if (email) parts.push(`S.email=${encodeIntentExtra(email)}`);
     if (contact.organization) {
       parts.push(`S.company=${encodeIntentExtra(contact.organization)}`);
     }
-    if (contact.title) {
-      parts.push(`S.job_title=${encodeIntentExtra(contact.title)}`);
+    if (contact.role || contact.title) {
+      parts.push(`S.job_title=${encodeIntentExtra(contact.role || contact.title)}`);
+    }
+    if (contact.address) {
+      const a = contact.address;
+      const postal = [a.street, a.postalCode, a.city, a.country]
+        .filter(Boolean)
+        .join(", ");
+      if (postal) parts.push(`S.postal=${encodeIntentExtra(postal)}`);
     }
 
     const noteBits = [];
+    if (contact.nickname) noteBits.push(`Nickname: ${contact.nickname}`);
+    if (contact.emailWork) noteBits.push(`Work: ${contact.emailWork}`);
     if (contact.website) noteBits.push(contact.website);
+    if (contact.websiteWork) noteBits.push(contact.websiteWork);
     if (contact.github) noteBits.push(contact.github);
     if (contact.note) noteBits.push(contact.note);
     if (noteBits.length) {
@@ -198,18 +230,31 @@
   }
 
   /**
-   * @param {Record<string, string>} contact
+   * @param {Record<string, any>} contact
    */
   function contactPlainText(contact) {
+    const addr = contact.address
+      ? [
+          contact.address.street,
+          `${contact.address.postalCode || ""} ${contact.address.city || ""}`.trim(),
+          contact.address.country,
+        ]
+          .filter(Boolean)
+          .join(", ")
+      : "";
+
     return [
       contact.displayName ||
         `${contact.firstName || ""} ${contact.lastName || ""}`.trim(),
-      contact.phone,
-      contact.email,
-      contact.website,
-      contact.github,
+      contact.role || contact.title,
       contact.organization,
-      contact.title,
+      contact.phone,
+      contact.emailHome || contact.email,
+      contact.emailWork,
+      contact.website,
+      contact.websiteWork,
+      contact.github,
+      addr,
     ]
       .filter(Boolean)
       .join("\n");
@@ -262,7 +307,7 @@
   }
 
   /**
-   * @param {Record<string, string>} contact
+   * @param {Record<string, any>} contact
    */
   function renderDetails(contact) {
     /** @type {{ label: string, value: string, href?: string, copy?: string }[]} */
@@ -272,13 +317,21 @@
       `${contact.firstName || ""} ${contact.lastName || ""}`.trim();
 
     rows.push({ label: "Name", value: name, copy: name });
-
-    if (contact.email) {
+    if (contact.nickname) {
+      rows.push({ label: "Nick", value: contact.nickname, copy: contact.nickname });
+    }
+    if (contact.role || contact.title) {
       rows.push({
-        label: "Email",
-        value: contact.email,
-        href: `mailto:${contact.email}`,
-        copy: contact.email,
+        label: "Role",
+        value: contact.role || contact.title,
+        copy: contact.role || contact.title,
+      });
+    }
+    if (contact.organization) {
+      rows.push({
+        label: "Org",
+        value: contact.organization,
+        copy: contact.organization,
       });
     }
     if (contact.phone) {
@@ -289,12 +342,37 @@
         copy: contact.phone,
       });
     }
+    const homeEmail = contact.emailHome || contact.email;
+    if (homeEmail) {
+      rows.push({
+        label: "Email",
+        value: homeEmail,
+        href: `mailto:${homeEmail}`,
+        copy: homeEmail,
+      });
+    }
+    if (contact.emailWork) {
+      rows.push({
+        label: "Work",
+        value: contact.emailWork,
+        href: `mailto:${contact.emailWork}`,
+        copy: contact.emailWork,
+      });
+    }
     if (contact.website) {
       rows.push({
         label: "Web",
         value: contact.website.replace(/^https?:\/\//, ""),
         href: contact.website,
         copy: contact.website,
+      });
+    }
+    if (contact.websiteWork) {
+      rows.push({
+        label: "Company",
+        value: contact.websiteWork.replace(/^https?:\/\//, ""),
+        href: contact.websiteWork,
+        copy: contact.websiteWork,
       });
     }
     if (contact.github) {
@@ -305,15 +383,18 @@
         copy: contact.github,
       });
     }
-    if (contact.organization) {
-      rows.push({
-        label: "Org",
-        value: contact.organization,
-        copy: contact.organization,
-      });
-    }
-    if (contact.title) {
-      rows.push({ label: "Title", value: contact.title, copy: contact.title });
+    if (contact.address) {
+      const a = contact.address;
+      const formatted = [
+        a.street,
+        `${a.postalCode || ""} ${a.city || ""}`.trim(),
+        a.country,
+      ]
+        .filter(Boolean)
+        .join(", ");
+      if (formatted) {
+        rows.push({ label: "Address", value: formatted, copy: formatted });
+      }
     }
 
     els.detailList.innerHTML = "";
@@ -484,6 +565,16 @@
 
     els.footerName.textContent = name || "Contact";
     if (els.visualName) els.visualName.textContent = name || "Contact";
+    if (els.visualMeta) {
+      const meta = [contact.role || contact.title, contact.organization]
+        .filter(Boolean)
+        .join(" · ");
+      els.visualMeta.textContent = meta || contact.nickname || "reichi.id";
+    }
+    if (els.visualPhoto && contact.photo) {
+      els.visualPhoto.src = contact.photo;
+      els.visualPhoto.alt = name || "Contact photo";
+    }
     document.title = `${name || "Contact"} — reichi.id`;
     renderDetails(contact);
     configurePlatform(platform, contact, vcard);

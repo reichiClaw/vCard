@@ -310,17 +310,18 @@ a:hover {
   pointer-events: none;
 }
 
-.visual-mark {
+.visual-photo {
   position: absolute;
-  top: 6%;
-  right: 2%;
-  font-family: var(--font-display);
-  font-size: clamp(8rem, 24vw, 14rem);
-  font-weight: 400;
-  line-height: 0.8;
-  letter-spacing: -0.03em;
-  opacity: 0.16;
-  user-select: none;
+  top: clamp(1.25rem, 3vw, 2rem);
+  right: clamp(1.25rem, 3vw, 2rem);
+  z-index: 1;
+  width: min(148px, 34vw);
+  height: min(148px, 34vw);
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .visual-footer {
@@ -331,13 +332,24 @@ a:hover {
   justify-items: start;
 }
 
+.visual-id {
+  display: grid;
+  gap: 0.35rem;
+}
+
 .visual-name {
   font-family: var(--font-display);
   font-size: clamp(1.4rem, 3vw, 2.1rem);
   font-weight: 400;
   letter-spacing: -0.015em;
   line-height: 1.15;
-  max-width: 12ch;
+  max-width: 14ch;
+}
+
+.visual-meta {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .qr-panel {

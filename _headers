@@ -11,3 +11,6 @@
 /contact.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=60
+
+/assets/*
+  Cache-Control: public, max-age=86400
