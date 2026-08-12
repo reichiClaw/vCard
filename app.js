@@ -8,6 +8,9 @@
     ctaGroup: document.getElementById("cta-group"),
     primaryCta: document.getElementById("primary-cta"),
     secondaryCta: document.getElementById("secondary-cta"),
+    quickActions: document.getElementById("quick-actions"),
+    callCta: document.getElementById("call-cta"),
+    emailCta: document.getElementById("email-cta"),
     platformHint: document.getElementById("platform-hint"),
     qrPanel: document.getElementById("qr-panel"),
     qrcode: document.getElementById("qrcode"),
@@ -297,7 +300,8 @@
     qr.addData(vcard);
     qr.make();
 
-    els.qrcode.innerHTML = qr.createSvgTag(4, 0);
+    // Larger module size keeps the QR sharp when scaled up outside the card.
+    els.qrcode.innerHTML = qr.createSvgTag(6, 2);
     const svg = els.qrcode.querySelector("svg");
     if (svg) {
       svg.removeAttribute("width");
@@ -442,6 +446,34 @@
   }
 
   /**
+   * @param {Record<string, any>} contact
+   */
+  function wireQuickActions(contact) {
+    if (!els.quickActions) return;
+    const phone = contact.phone || "";
+    const email = contact.emailHome || contact.email || "";
+    let visible = false;
+
+    if (els.callCta && phone) {
+      els.callCta.href = `tel:${phone}`;
+      els.callCta.hidden = false;
+      visible = true;
+    } else if (els.callCta) {
+      els.callCta.hidden = true;
+    }
+
+    if (els.emailCta && email) {
+      els.emailCta.href = `mailto:${email}`;
+      els.emailCta.hidden = false;
+      visible = true;
+    } else if (els.emailCta) {
+      els.emailCta.hidden = true;
+    }
+
+    els.quickActions.hidden = !visible;
+  }
+
+  /**
    * @param {Platform} platform
    * @param {Record<string, string>} contact
    * @param {string} vcard
@@ -456,6 +488,7 @@
 
     els.ctaGroup.hidden = false;
     els.platformHint.hidden = false;
+    wireQuickActions(contact);
 
     if (platform === "ios") {
       els.headline.textContent = "Add me to your contacts";
