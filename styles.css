@@ -239,24 +239,18 @@ a:hover {
   animation: rise 0.75s var(--ease) 0.12s both;
 }
 
-.action-row {
+.cta-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 1rem 1.25rem;
+  align-items: center;
+  gap: 0.85rem 1rem;
   animation: rise 0.75s var(--ease) 0.18s both;
-}
-
-.action-stack {
-  display: grid;
-  gap: 0.75rem;
-  min-width: min(100%, 18rem);
-  flex: 1 1 16rem;
 }
 
 .cta-group {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.7rem;
 }
 
@@ -328,13 +322,16 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
+  margin-top: 0.75rem;
+  animation: rise 0.75s var(--ease) 0.2s both;
 }
 
 .platform-hint {
-  margin: 0;
+  margin: 1rem 0 0;
   max-width: 28rem;
   font-size: 0.88rem;
   color: var(--mute);
+  animation: rise 0.75s var(--ease) 0.22s both;
 }
 
 /* Business card stage */
@@ -561,30 +558,30 @@ a:hover {
   color: rgba(255, 255, 255, 0.55);
 }
 
-/* Flat QR next to CTAs — no tilt for crisp scanning */
+/* Flat QR directly beside CTA buttons — no tilt for crisp scanning */
 .qr-panel {
   position: relative;
   z-index: 2;
   display: grid;
   justify-items: center;
-  align-content: start;
-  gap: 0.45rem;
+  align-content: center;
+  gap: 0.35rem;
   flex: 0 0 auto;
-  padding: 0.75rem 0.85rem 0.85rem;
-  border-radius: 16px;
+  padding: 0.55rem 0.65rem 0.65rem;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid var(--line);
-  box-shadow: 0 12px 28px rgba(11, 18, 32, 0.08);
+  box-shadow: 0 10px 24px rgba(11, 18, 32, 0.08);
   backdrop-filter: blur(10px);
   transform: none;
 }
 
 .qrcode {
-  width: 148px;
-  height: 148px;
-  padding: 0.45rem;
+  width: 128px;
+  height: 128px;
+  padding: 0.4rem;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 2px 0 rgba(11, 18, 32, 0.04);
 }
 
@@ -886,13 +883,9 @@ a:hover {
     height: 64px;
   }
 
-  .action-row {
-    align-items: stretch;
-  }
-
   .qrcode {
-    width: 136px;
-    height: 136px;
+    width: 104px;
+    height: 104px;
   }
 
   .guide-list {
@@ -928,17 +921,13 @@ a:hover {
     gap: 0.45rem;
   }
 
-  .action-row {
-    flex-direction: column;
-  }
-
-  .qr-panel {
-    align-self: flex-start;
+  .cta-row {
+    align-items: flex-start;
   }
 
   .qrcode {
-    width: 140px;
-    height: 140px;
+    width: 108px;
+    height: 108px;
   }
 }
 
