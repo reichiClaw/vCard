@@ -507,7 +507,7 @@
       });
       wireQuickActions(contact);
       els.platformHint.textContent =
-        "Normally iOS opens the card automatically when you visit reichi.id.";
+        "Safari opens the contact sheet automatically. If you close it, use the buttons below.";
       return;
     }
 
@@ -573,27 +573,24 @@
     }
   }
 
+  /**
+   * Open the vCard after the HTML UI is ready. Prefer a history entry so
+   * dismissing / going back still shows Call + Email on this page.
+   * @param {string} href
+   */
+  function openVCardSheet(href) {
+    window.setTimeout(() => {
+      window.location.href = href;
+    }, 80);
+  }
+
   async function init() {
     const params = new URLSearchParams(location.search);
-    const forcePage =
+    const skipAutoVcf =
       params.has("page") ||
       params.has("html") ||
       params.get("view") === "page";
     const { platform } = detectPlatform();
-
-    if (
-      platform === "ios" &&
-      !forcePage &&
-      !params.has("download") &&
-      !params.has("vcf")
-    ) {
-      els.headline.textContent = "Opening contact…";
-      els.lede.textContent = "Safari is loading the contact card.";
-      els.ctaGroup.hidden = true;
-      els.platformHint.hidden = true;
-      window.location.replace(new URL("contact.vcf", location.href).href);
-      return;
-    }
 
     const response = await fetch("./contact.json", { cache: "no-cache" });
     if (!response.ok) {
@@ -669,6 +666,9 @@
         contact.filename || "contact.vcf",
         platform === "ios" ? "open" : "download"
       );
+    } else if (platform === "ios" && !skipAutoVcf) {
+      // Page (with Call / Email) is already painted; then open the sheet.
+      openVCardSheet(new URL("contact.vcf", location.href).href);
     }
   }
 

@@ -6,7 +6,7 @@ Fast, static contact page for [reichi.id](https://reichi.id). It detects the vis
 
 | Platform | Best option | Why |
 | --- | --- | --- |
-| **iOS / iPadOS** | **Auto-served `.vcf`** at `/` | Cloudflare Pages middleware (and a client fallback) serves `contact.vcf` immediately so Safari opens the native contact sheet — no button. Use [`/?page=1`](./?page=1) to see the HTML page on iOS. |
+| **iOS / iPadOS** | **Auto-open `.vcf`** after page load | The HTML page renders first (Add to Contacts, Call, Send email), then Safari opens the contact sheet. Dismissing the sheet leaves those actions available. Use [`/?page=1`](./?page=1) to skip auto-open. |
 | **Android (on the phone)** | **Android `INSERT` intent** | `.vcf` files only download on Android — they do not open a save sheet. Chrome can launch `android.intent.action.INSERT` with `S.name` / `S.email` / `S.phone` extras so the native Contacts editor opens pre-filled. Fallback: copy details. |
 | **Desktop → phone** | **Scan the QR** | QR shines when this page is on a laptop/monitor and the phone’s camera does the save. |
 | **macOS** | Download `.vcf` | Opens in Contacts.app. QR is offered for saving onto a phone. |
