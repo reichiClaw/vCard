@@ -8,7 +8,6 @@
     ctaGroup: document.getElementById("cta-group"),
     primaryCta: document.getElementById("primary-cta"),
     secondaryCta: document.getElementById("secondary-cta"),
-    quickActions: document.getElementById("quick-actions"),
     callCta: document.getElementById("call-cta"),
     emailCta: document.getElementById("email-cta"),
     platformHint: document.getElementById("platform-hint"),
@@ -446,31 +445,34 @@
   }
 
   /**
+   * Show Call / Send email on every platform (desktop, Android, iOS page view).
    * @param {Record<string, any>} contact
    */
   function wireQuickActions(contact) {
-    if (!els.quickActions) return;
     const phone = contact.phone || "";
     const email = contact.emailHome || contact.email || "";
-    let visible = false;
 
-    if (els.callCta && phone) {
-      els.callCta.href = `tel:${phone}`;
-      els.callCta.hidden = false;
-      visible = true;
-    } else if (els.callCta) {
-      els.callCta.hidden = true;
+    if (els.callCta) {
+      if (phone) {
+        els.callCta.href = `tel:${phone}`;
+        els.callCta.textContent = "Call";
+        els.callCta.className = "btn btn-soft";
+        els.callCta.hidden = false;
+      } else {
+        els.callCta.hidden = true;
+      }
     }
 
-    if (els.emailCta && email) {
-      els.emailCta.href = `mailto:${email}`;
-      els.emailCta.hidden = false;
-      visible = true;
-    } else if (els.emailCta) {
-      els.emailCta.hidden = true;
+    if (els.emailCta) {
+      if (email) {
+        els.emailCta.href = `mailto:${email}`;
+        els.emailCta.textContent = "Send email";
+        els.emailCta.className = "btn btn-soft";
+        els.emailCta.hidden = false;
+      } else {
+        els.emailCta.hidden = true;
+      }
     }
-
-    els.quickActions.hidden = !visible;
   }
 
   /**
@@ -488,7 +490,6 @@
 
     els.ctaGroup.hidden = false;
     els.platformHint.hidden = false;
-    wireQuickActions(contact);
 
     if (platform === "ios") {
       els.headline.textContent = "Add me to your contacts";
@@ -504,6 +505,7 @@
         className: "btn btn-ghost",
         hidden: true,
       });
+      wireQuickActions(contact);
       els.platformHint.textContent =
         "Normally iOS opens the card automatically when you visit reichi.id.";
       return;
@@ -526,6 +528,7 @@
           copyToClipboard(contactPlainText(contact), "Contact details copied");
         },
       });
+      wireQuickActions(contact);
       els.platformHint.textContent =
         "Uses Android’s Add Contact screen in Chrome. If it’s blocked, copy the details below.";
       return;
@@ -563,6 +566,7 @@
         : platform === "windows"
           ? "Opens in People / Outlook. Prefer your phone? Scan the QR."
           : "Open the .vcf in your contacts app, or scan the QR.";
+    wireQuickActions(contact);
     showQr();
     if (els.qrCaption) {
       els.qrCaption.textContent = "Scan to save";

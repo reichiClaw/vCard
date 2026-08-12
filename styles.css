@@ -327,14 +327,6 @@ a:hover {
   transform: translateY(-1px);
 }
 
-.quick-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-top: 0.75rem;
-  animation: rise 0.75s var(--ease) 0.2s both;
-}
-
 .platform-hint {
   margin: 1rem 0 0;
   max-width: 28rem;
