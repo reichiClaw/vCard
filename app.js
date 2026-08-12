@@ -550,15 +550,9 @@
       onClick: () => deliverVCard(vcard, filename, "download"),
     });
     bindCta(els.secondaryCta, {
-      label: "Scan with phone",
+      label: "",
       className: "btn btn-ghost",
-      onClick: () => {
-        showQr();
-        if (els.qrCaption) {
-          els.qrCaption.textContent = "Scan to save";
-        }
-        els.qrPanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      },
+      hidden: true,
     });
     els.platformHint.textContent =
       platform === "macos"
