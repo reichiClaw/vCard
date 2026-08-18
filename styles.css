@@ -1011,6 +1011,134 @@ a:hover {
   font-weight: 600;
 }
 
+/* Dark mode — token overrides; the card itself is already dark.
+   All combinations measured >= 4.5:1 (focus outline >= 3:1). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0e1520;
+    --paper-2: #121a26;
+    --ink: #e9eef5;
+    --ink-soft: #c8d2de;
+    --mute: #9aa8b7;
+    --line: rgba(255, 255, 255, 0.12);
+    --line-strong: rgba(255, 255, 255, 0.24);
+    --accent-soft: #123c38;
+    --accent-text: #7fd8cc;
+    --error: #f2a5a5;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  .atmosphere {
+    background:
+      radial-gradient(120% 80% at 100% 0%, rgba(20, 184, 166, 0.14), transparent 50%),
+      radial-gradient(90% 70% at 0% 100%, rgba(197, 164, 106, 0.06), transparent 55%),
+      linear-gradient(165deg, #0c1219 0%, #0e1520 45%, #0d1a21 100%);
+  }
+
+  .grain {
+    opacity: 0.14;
+    mix-blend-mode: screen;
+  }
+
+  .rail {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  }
+
+  a {
+    color: #57cfc2;
+  }
+
+  a:hover {
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline-color: #2dd4bf;
+  }
+
+  .eyebrow,
+  .guide-num,
+  .guide-list code {
+    color: #57cfc2;
+  }
+
+  .skip-link {
+    background: var(--ink);
+    color: #0b1220;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: #0b1220;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-deep);
+    color: var(--white);
+  }
+
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--ink);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .qr-panel {
+    background: rgba(18, 26, 38, 0.85);
+  }
+
+  .detail-list {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+  }
+
+  .detail-list .value,
+  .detail-list .value a {
+    color: var(--ink);
+  }
+
+  .copy-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+
+  .copy-btn:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #0b1220;
+  }
+
+  .guide-list article {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .toast {
+    background: var(--ink);
+    color: #0b1220;
+  }
+
+  .error-note {
+    border-color: rgba(242, 165, 165, 0.4);
+    background: rgba(185, 28, 28, 0.18);
+  }
+
+  .card-glow {
+    opacity: 0.55;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
