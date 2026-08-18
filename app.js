@@ -267,14 +267,30 @@
       .join("\n");
   }
 
+  const ICONS = {
+    download:
+      '<svg class="btn-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    userPlus:
+      '<svg class="btn-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>',
+    copy:
+      '<svg class="btn-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  };
+
   /**
    * @param {HTMLAnchorElement} el
-   * @param {{ label: string, href?: string, onClick?: (e: Event) => void, className: string, hidden?: boolean }} opts
+   * @param {{ label: string, href?: string, onClick?: (e: Event) => void, className: string, hidden?: boolean, icon?: string }} opts
    */
   function bindCta(el, opts) {
     el.hidden = Boolean(opts.hidden);
     el.className = opts.className;
-    el.textContent = opts.label;
+    if (opts.icon && ICONS[opts.icon]) {
+      el.innerHTML = ICONS[opts.icon];
+      const span = document.createElement("span");
+      span.textContent = opts.label;
+      el.appendChild(span);
+    } else {
+      el.textContent = opts.label;
+    }
 
     if (opts.href) {
       el.href = opts.href;
@@ -456,11 +472,10 @@
     const phone = contact.phone || "";
     const email = contact.emailHome || contact.email || "";
 
+    // Only update href/visibility — static markup keeps its icon + label.
     if (els.callCta) {
       if (phone) {
         els.callCta.href = `tel:${phone}`;
-        els.callCta.textContent = "Call";
-        els.callCta.className = "btn btn-soft";
         els.callCta.hidden = false;
       } else {
         els.callCta.hidden = true;
@@ -470,8 +485,6 @@
     if (els.emailCta) {
       if (email) {
         els.emailCta.href = `mailto:${email}`;
-        els.emailCta.textContent = "Send email";
-        els.emailCta.className = "btn btn-soft";
         els.emailCta.hidden = false;
       } else {
         els.emailCta.hidden = true;
@@ -503,6 +516,7 @@
         label: "Add to Contacts",
         className: "btn btn-primary",
         href: new URL("contact.vcf", location.href).href,
+        icon: "userPlus",
       });
       bindCta(els.secondaryCta, {
         label: "",
@@ -524,10 +538,12 @@
         label: "Add to Contacts",
         className: "btn btn-primary",
         href: intentUrl,
+        icon: "userPlus",
       });
       bindCta(els.secondaryCta, {
         label: "Copy details",
         className: "btn btn-ghost",
+        icon: "copy",
         onClick: () => {
           copyToClipboard(contactPlainText(contact), "Contact details copied");
         },
@@ -551,6 +567,7 @@
     bindCta(els.primaryCta, {
       label: "Download .vcf",
       className: "btn btn-primary",
+      icon: "download",
       onClick: () => deliverVCard(vcard, filename, "download"),
     });
     bindCta(els.secondaryCta, {
@@ -601,6 +618,7 @@
       `${contact.firstName || ""} ${contact.lastName || ""}`.trim();
 
     els.footerName.textContent = name || "Contact";
+    if (els.brand) els.brand.textContent = name || "Contact";
     if (els.visualName) els.visualName.textContent = name || "Contact";
     if (els.visualMeta) {
       const meta = [contact.role || contact.title, contact.organization]
