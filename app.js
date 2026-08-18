@@ -309,7 +309,10 @@
       svg.style.width = "100%";
       svg.style.height = "100%";
       svg.setAttribute("role", "img");
-      svg.setAttribute("aria-label", "QR code containing contact vCard");
+      svg.setAttribute(
+        "aria-label",
+        "QR code — scan with a phone camera to save Christian Reichinger's contact card"
+      );
     }
     return true;
   }
@@ -434,6 +437,7 @@
         btn.type = "button";
         btn.className = "copy-btn";
         btn.textContent = "Copy";
+        btn.setAttribute("aria-label", `Copy ${row.label.toLowerCase()}`);
         btn.addEventListener("click", () => {
           copyToClipboard(row.copy, `${row.label} copied`);
         });
@@ -668,7 +672,34 @@
 
   init().catch((err) => {
     console.error(err);
-    els.lede.textContent = "Could not load contact data. Try again in a moment.";
+    els.lede.textContent =
+      "Could not load contact data. Check your connection and try again.";
     els.ctaGroup.hidden = true;
+
+    // Recoverable error state: offer retry + direct fallback links.
+    const note = document.createElement("div");
+    note.className = "error-note";
+    note.setAttribute("role", "alert");
+    note.textContent = "Loading failed. ";
+
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "copy-btn";
+    retry.textContent = "Try again";
+    retry.addEventListener("click", () => window.location.reload());
+    note.appendChild(retry);
+
+    const fallback = document.createElement("p");
+    fallback.className = "platform-hint";
+    fallback.innerHTML =
+      'Direct links: <a href="/contact.vcf">download vCard</a> · ' +
+      '<a href="tel:+436644385462">call</a> · ' +
+      '<a href="mailto:reichi@reichi.com">email</a>';
+
+    const copyEl = document.querySelector(".hero-copy");
+    if (copyEl) {
+      copyEl.appendChild(note);
+      copyEl.appendChild(fallback);
+    }
   });
 })();

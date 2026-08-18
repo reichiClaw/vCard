@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://reichi.id/sitemap.xml

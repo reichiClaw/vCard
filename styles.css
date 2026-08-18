@@ -1,7 +1,8 @@
 :root {
   --ink: #0b1220;
   --ink-soft: #243044;
-  --mute: #5b6b7c;
+  /* 5.5:1 on --paper; WCAG AA for body copy and hints */
+  --mute: #51606f;
   --line: rgba(11, 18, 32, 0.1);
   --line-strong: rgba(11, 18, 32, 0.16);
   --paper: #e8eef4;
@@ -9,10 +10,15 @@
   --accent: #0d9488;
   --accent-bright: #14b8a6;
   --accent-deep: #0f766e;
-  --accent-soft: rgba(13, 148, 136, 0.14);
+  --accent-soft: #d7edeb;
+  /* 6.3:1 on --accent-soft */
+  --accent-text: #0b5e56;
   --foil: #c5a46a;
   --foil-soft: rgba(197, 164, 106, 0.55);
   --white: #ffffff;
+  --success: #15803d;
+  --warning: #b45309;
+  --error: #b91c1c;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --font-display: "Archivo Black", "Arial Black", sans-serif;
   --font-body: "Manrope", "Helvetica Neue", sans-serif;
@@ -318,11 +324,11 @@ a:hover {
 .btn-soft {
   background: var(--accent-soft);
   border-color: transparent;
-  color: var(--accent-deep);
+  color: var(--accent-text);
 }
 
 .btn-soft:hover {
-  background: var(--accent);
+  background: var(--accent-deep);
   color: var(--white);
   transform: translateY(-1px);
 }
@@ -393,8 +399,9 @@ a:hover {
   gap: 0.7rem;
   overflow: visible;
   color: var(--white);
+  /* Darker gradient start keeps white card text at >= 4.5:1 everywhere */
   background:
-    linear-gradient(145deg, #17c3b0 0%, #0f766e 42%, #0b1220 100%);
+    linear-gradient(145deg, #0f766e 0%, #115e59 45%, #0b1220 100%);
   isolation: isolate;
 }
 
@@ -402,8 +409,9 @@ a:hover {
   content: "";
   position: absolute;
   inset: 0;
+  /* Shine sits behind the photo (top right), away from card text */
   background:
-    radial-gradient(90% 70% at 100% 0%, rgba(255, 255, 255, 0.22), transparent 55%),
+    radial-gradient(45% 40% at 100% 0%, rgba(255, 255, 255, 0.2), transparent 60%),
     linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.28) 100%);
   pointer-events: none;
   z-index: -1;
@@ -450,7 +458,7 @@ a:hover {
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .card-photo {
@@ -486,7 +494,7 @@ a:hover {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .card-rule {
@@ -524,11 +532,11 @@ a:hover {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .card-v {
-  color: rgba(255, 255, 255, 0.94);
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.86rem;
   font-weight: 600;
@@ -556,7 +564,7 @@ a:hover {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: lowercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* Flat QR directly beside CTA buttons — no tilt for crisp scanning */
@@ -948,6 +956,45 @@ a:hover {
     width: 132px;
     height: 132px;
   }
+}
+
+/* Touch targets: WCAG 2.5.8 — min 44px on coarse pointers */
+@media (pointer: coarse) {
+  .btn,
+  .copy-btn,
+  .top-nav a {
+    min-height: 44px;
+  }
+
+  .copy-btn {
+    padding: 0.55rem 1rem;
+  }
+}
+
+/* No-JS fallback: direct actions, no dead page */
+.nojs-actions {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 22rem;
+}
+
+.nojs-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+  color: var(--mute);
+}
+
+/* Error state with retry */
+.error-note {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  max-width: 28rem;
+  border-radius: 12px;
+  border: 1px solid rgba(185, 28, 28, 0.35);
+  background: rgba(185, 28, 28, 0.08);
+  color: var(--error);
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
