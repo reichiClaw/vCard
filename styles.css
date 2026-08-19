@@ -201,8 +201,9 @@ a:hover {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
-  /* Shorter hero teases the details section above the fold */
-  min-height: min(78svh, 720px);
+  /* Hero fills the viewport — secondary sections live below the fold.
+     Capped so very tall screens don't get a huge empty gap. */
+  min-height: min(calc(100svh - 5.5rem), 900px);
   max-width: var(--max);
   margin: 0 auto;
   padding: clamp(0.5rem, 2vw, 1rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 7vw, 4.5rem);
@@ -663,16 +664,67 @@ a:hover {
   color: var(--mute);
 }
 
-.detail-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background: rgba(255, 255, 255, 0.62);
+/* Collapsible contact directory */
+
+.details-fold {
   border: 1px solid var(--line);
   border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(11, 18, 32, 0.04);
+  background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.details-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 1.05rem 1.25rem;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--ink);
+  list-style: none;
+  transition: background 0.2s var(--ease);
+}
+
+.details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.details-summary:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.fold-chevron {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--accent-deep);
+  transition: transform 0.25s var(--ease);
+}
+
+.details-fold[open] .fold-chevron {
+  transform: rotate(180deg);
+}
+
+.details-fold[open] .details-summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.details-hint {
+  margin: 0;
+  padding: 0.85rem 1.25rem 0;
+  font-size: 0.88rem;
+  color: var(--mute);
+}
+
+.detail-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  background: transparent;
 }
 
 .detail-list li {
@@ -1098,9 +1150,16 @@ a:hover {
     background: rgba(18, 26, 38, 0.85);
   }
 
-  .detail-list {
+  .details-fold {
     background: rgba(255, 255, 255, 0.05);
-    box-shadow: none;
+  }
+
+  .details-summary:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .fold-chevron {
+    color: #57cfc2;
   }
 
   .detail-list .value,

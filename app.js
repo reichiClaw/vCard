@@ -15,6 +15,7 @@
     qrcode: document.getElementById("qrcode"),
     qrCaption: document.getElementById("qr-caption"),
     detailList: document.getElementById("detail-list"),
+    detailsFold: document.getElementById("details-fold"),
     footerName: document.getElementById("footer-name"),
     visualName: document.getElementById("visual-name"),
     visualMeta: document.getElementById("visual-meta"),
@@ -675,6 +676,17 @@
     document.title = `${name || "Contact"} — reichi.id`;
     renderDetails(contact);
     configurePlatform(platform, contact, vcard);
+
+    // Nav link / deep link to #details should reveal the folded directory.
+    if (els.detailsFold) {
+      const openFold = () => {
+        els.detailsFold.open = true;
+      };
+      if (location.hash === "#details") openFold();
+      document.querySelectorAll('a[href="#details"]').forEach((a) => {
+        a.addEventListener("click", openFold);
+      });
+    }
 
     if (params.has("download") || params.has("vcf")) {
       deliverVCard(
