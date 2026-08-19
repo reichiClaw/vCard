@@ -3,6 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      // Pre-paint: resolve theme (stored override or OS) to avoid a flash.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        try {
+          var t = localStorage.getItem("theme");
+          var dark =
+            t === "dark" ||
+            (t !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          d.classList.toggle("theme-dark", dark);
+        } catch (e) {}
+      })();
+    </script>
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0f766e" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e1520" />
     <meta
@@ -80,6 +95,13 @@
       <nav class="top-nav">
         <a href="#details">Details</a>
         <a href="#guide">How it works</a>
+        <button
+          type="button"
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Theme: auto (follows system). Activate to switch."
+          title="Theme: auto"
+        ></button>
       </nav>
     </header>
 

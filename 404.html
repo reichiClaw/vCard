@@ -3,6 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        try {
+          var t = localStorage.getItem("theme");
+          var dark =
+            t === "dark" ||
+            (t !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          d.classList.toggle("theme-dark", dark);
+        } catch (e) {}
+      })();
+    </script>
     <meta name="robots" content="noindex" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0f766e" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e1520" />

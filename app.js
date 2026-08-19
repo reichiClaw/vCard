@@ -30,6 +30,74 @@
 
   let toastTimer = 0;
 
+  /* ---------- Theme toggle: auto (OS) -> light -> dark -> auto ---------- */
+
+  const THEME_ICONS = {
+    auto: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"/></svg>',
+    light:
+      '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>',
+    dark: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+  };
+
+  const THEME_LABELS = {
+    auto: "Theme: auto (follows system). Activate to switch to light.",
+    light: "Theme: light. Activate to switch to dark.",
+    dark: "Theme: dark. Activate to follow the system setting.",
+  };
+
+  const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function themeMode() {
+    try {
+      const t = localStorage.getItem("theme");
+      return t === "light" || t === "dark" ? t : "auto";
+    } catch {
+      return "auto";
+    }
+  }
+
+  function applyTheme() {
+    const mode = themeMode();
+    const dark = mode === "dark" || (mode === "auto" && darkQuery.matches);
+    document.documentElement.classList.toggle("theme-dark", dark);
+
+    // Keep browser chrome color in sync when the user forces a theme.
+    const metas = document.querySelectorAll('meta[name="theme-color"]');
+    metas.forEach((m) => {
+      if (mode === "auto") {
+        m.content = m.media.includes("dark") ? "#0e1520" : "#0f766e";
+      } else {
+        m.content = dark ? "#0e1520" : "#0f766e";
+      }
+    });
+
+    const btn = document.getElementById("theme-toggle");
+    if (btn) {
+      btn.innerHTML = THEME_ICONS[mode];
+      btn.setAttribute("aria-label", THEME_LABELS[mode]);
+      btn.title = `Theme: ${mode}`;
+    }
+  }
+
+  function setupThemeToggle() {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const next = { auto: "light", light: "dark", dark: "auto" }[themeMode()];
+      try {
+        if (next === "auto") localStorage.removeItem("theme");
+        else localStorage.setItem("theme", next);
+      } catch {}
+      applyTheme();
+    });
+    darkQuery.addEventListener("change", () => {
+      if (themeMode() === "auto") applyTheme();
+    });
+    applyTheme();
+  }
+
+  setupThemeToggle();
+
   /** @typedef {"ios"|"android"|"macos"|"windows"|"linux"|"other"} Platform */
 
   /**
