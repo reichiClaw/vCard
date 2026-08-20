@@ -11,9 +11,7 @@
     callCta: document.getElementById("call-cta"),
     emailCta: document.getElementById("email-cta"),
     platformHint: document.getElementById("platform-hint"),
-    qrPanel: document.getElementById("qr-panel"),
-    qrcode: document.getElementById("qrcode"),
-    qrCaption: document.getElementById("qr-caption"),
+    qrCta: document.getElementById("qr-cta"),
     detailList: document.getElementById("detail-list"),
     detailsFold: document.getElementById("details-fold"),
     footerName: document.getElementById("footer-name"),
@@ -403,14 +401,10 @@
     return true;
   }
 
-  /**
-   * @param {string} vcard
-   */
-  function renderQr(vcard) {
-    return renderQrInto(els.qrcode, vcard);
-  }
-
   /* ---------- Card animations: flip + tilt/gloss + gyro ---------- */
+
+  /** Set by setupCardFlip; used by the "Scan QR code" button. */
+  let flipCard = () => {};
 
   function setupCardFlip() {
     const card = document.getElementById("biz-card");
@@ -426,6 +420,7 @@
       back.toggleAttribute("inert", !flipped);
     };
     setFlipped(location.hash === "#qr");
+    flipCard = setFlipped;
 
     card.addEventListener("click", (e) => {
       // Links on the card keep working; anything else flips.
@@ -660,14 +655,24 @@
    */
   function configurePlatform(platform, contact, vcard) {
     const filename = contact.filename || "contact.vcf";
-    const showQr = () => {
-      if (renderQr(vcard)) {
-        els.qrPanel.hidden = false;
-      }
-    };
 
     els.ctaGroup.hidden = false;
     els.platformHint.hidden = false;
+
+    // "Scan QR code" flips the card to its QR side and brings it into view.
+    if (els.qrCta) {
+      els.qrCta.addEventListener("click", () => {
+        flipCard(true);
+        const card = document.getElementById("biz-card");
+        const reduce = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        card?.scrollIntoView({
+          behavior: reduce ? "auto" : "smooth",
+          block: "center",
+        });
+      });
+    }
 
     if (platform === "ios") {
       els.headline.textContent = "Add me to your contacts";
@@ -743,10 +748,6 @@
           ? "Opens in People / Outlook. Prefer your phone? Scan the QR."
           : "Open the .vcf in your contacts app, or scan the QR.";
     wireQuickActions(contact);
-    showQr();
-    if (els.qrCaption) {
-      els.qrCaption.textContent = "Scan to save";
-    }
   }
 
   /**

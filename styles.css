@@ -288,11 +288,8 @@ html:not(.js) .theme-toggle {
 }
 
 .cta-row {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  gap: 0.75rem;
-  max-width: 100%;
+  display: block;
+  width: min(100%, 28rem);
   animation: rise 0.75s var(--ease) 0.18s both;
 }
 
@@ -306,10 +303,8 @@ html:not(.js) .theme-toggle {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: center;
   gap: 0.55rem;
-  flex: 0 1 auto;
-  min-width: 0;
+  width: 100%;
 }
 
 .cta-group .btn {
@@ -431,6 +426,7 @@ html:not(.js) .theme-toggle {
 .card-inner {
   position: relative;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.65s var(--ease);
 }
 
@@ -440,6 +436,8 @@ html:not(.js) .theme-toggle {
 
 .card-front {
   position: relative;
+  /* Explicit 3D transform — Safari ignores backface-visibility otherwise */
+  transform: rotateY(0deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -691,32 +689,6 @@ html:not(.js) .theme-toggle {
   color: rgba(255, 255, 255, 0.75);
 }
 
-.flip-btn {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.92);
-  cursor: pointer;
-  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
-}
-
-.flip-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: rgba(255, 255, 255, 0.7);
-}
-
-.flip-btn svg {
-  width: 15px;
-  height: 15px;
-}
-
 /* Card back: large scannable QR */
 .card-back-face {
   display: grid;
@@ -741,6 +713,12 @@ html:not(.js) .theme-toggle {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
+.card-back-hint {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
 .card-back-caption {
   margin: 0;
   padding: 0.22rem 0.7rem;
@@ -755,39 +733,6 @@ html:not(.js) .theme-toggle {
 }
 
 @media (pointer: coarse) {
-  .flip-btn {
-    width: 44px;
-    height: 44px;
-  }
-}
-
-/* Flat QR directly beside CTA buttons — no tilt for crisp scanning.
-   Stretches to the button stack height so the row reads as one group. */
-.qr-panel {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 0.45rem;
-  flex: 0 0 auto;
-  align-self: stretch;
-  padding: 0.55rem 0.65rem 0.65rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid var(--line);
-  box-shadow: 0 10px 24px rgba(11, 18, 32, 0.08);
-  backdrop-filter: blur(10px);
-  transform: none;
-}
-
-.qrcode {
-  width: 128px;
-  height: 128px;
-  padding: 0.4rem;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 0 rgba(11, 18, 32, 0.04);
 }
 
 .qrcode svg,
@@ -798,18 +743,6 @@ html:not(.js) .theme-toggle {
   width: 100% !important;
   height: 100% !important;
   image-rendering: pixelated;
-}
-
-.qr-caption {
-  margin: 0;
-  padding: 0.22rem 0.65rem;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-  background: var(--accent-soft);
-  border-radius: 999px;
 }
 
 /* Sections */
@@ -1160,10 +1093,6 @@ html:not(.js) .theme-toggle {
     width: 100%;
   }
 
-  .qr-panel {
-    align-self: center;
-  }
-
   .qrcode {
     width: 140px;
     height: 140px;
@@ -1332,10 +1261,6 @@ html.theme-dark .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.12);
 }
 
-html.theme-dark .qr-panel {
-    background: rgba(18, 26, 38, 0.85);
-}
-
 html.theme-dark .details-fold {
     background: rgba(255, 255, 255, 0.05);
 }
@@ -1462,10 +1387,6 @@ html:not(.js) .guide-list code {
   html:not(.js) .btn-ghost:hover {
     border-color: var(--ink);
     background: rgba(255, 255, 255, 0.12);
-  }
-
-  html:not(.js) .qr-panel {
-    background: rgba(18, 26, 38, 0.85);
   }
 
   html:not(.js) .details-fold {
