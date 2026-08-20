@@ -2,17 +2,17 @@
   --ink: #0a1228;
   --ink-soft: #1e2c4a;
   /* 5.5:1 on --paper; WCAG AA for body copy and hints */
-  --mute: #44615c;
+  --mute: #4a5a5c;
   --line: rgba(6, 12, 30, 0.1);
   --line-strong: rgba(6, 12, 30, 0.16);
-  --paper: #f2f9f8;
-  --paper-2: #f8fcfb;
-  --accent: #0d9488;
-  --accent-bright: #38bdf8;
-  --accent-deep: #0f766e;
-  --accent-soft: #b9e6df;
+  --paper: #f7fafa;
+  --paper-2: #fcfeff;
+  --accent: #0e8a8d;
+  --accent-bright: #04edf0;
+  --accent-deep: #0b7276;
+  --accent-soft: #04edf0;
   /* 6.3:1 on --accent-soft */
-  --accent-text: #0b4f49;
+  --accent-text: #05383a;
   --foil: #38bdf8;
   --foil-soft: rgba(59, 130, 246, 0.6);
   --white: #ffffff;
@@ -25,6 +25,8 @@
   --max: 1120px;
   --card-radius: 18px;
   --glow-speed: 6s;
+  --btn-primary-bg: #04edf0;
+  --btn-primary-fg: #052e30;
 }
 
 /* Registered properties let the hue/border-spot interpolate smoothly
@@ -146,13 +148,15 @@ a:hover {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  /* Light: clean paper with one crisp cyan hint, pattern comes from .rail dots */
   background:
-    radial-gradient(120% 80% at 100% 0%, rgba(13, 148, 136, 0.2), transparent 50%),
-    radial-gradient(90% 70% at 0% 100%, rgba(47, 107, 255, 0.06), transparent 55%),
-    linear-gradient(165deg, #dff0ec 0%, #f0f9f7 45%, #ddefe9 100%);
+    radial-gradient(60% 45% at 100% 0%, rgba(4, 237, 240, 0.14), transparent 62%),
+    #f7fafa;
 }
 
 .orb {
+  /* Hidden in light (clean dot pattern instead); dark re-enables them */
+  display: none;
   position: absolute;
   border-radius: 50%;
   filter: blur(70px);
@@ -180,7 +184,7 @@ a:hover {
 .grain {
   position: absolute;
   inset: 0;
-  opacity: 0.28;
+  opacity: 0.14;
   mix-blend-mode: multiply;
   background-image:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
@@ -189,12 +193,10 @@ a:hover {
 .rail {
   position: absolute;
   inset: 0;
-  opacity: 0.4;
-  background-image:
-    linear-gradient(rgba(6, 12, 30, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 12, 30, 0.03) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse at 70% 30%, #000 10%, transparent 70%);
+  opacity: 0.55;
+  background-image: radial-gradient(rgba(5, 46, 48, 0.16) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse at 65% 35%, #000 25%, transparent 78%);
 }
 
 /* Header */
@@ -395,8 +397,8 @@ html:not(.js) .theme-toggle {
 }
 
 .btn-primary {
-  background: var(--ink);
-  color: var(--white);
+  background: var(--btn-primary-bg, var(--ink));
+  color: var(--btn-primary-fg, var(--white));
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.12) inset,
     0 14px 32px rgba(6, 12, 30, 0.18);
@@ -1290,9 +1292,20 @@ html.theme-dark .grain {
 }
 
 html.theme-dark .rail {
+    opacity: 0.4;
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 70% 30%, #000 10%, transparent 70%);
+}
+
+html.theme-dark .orb {
+    display: block;
+}
+
+html.theme-dark .orb-a {
+    background: radial-gradient(circle, rgba(47, 107, 255, 0.26), transparent 68%);
 }
 
 html.theme-dark a {
@@ -1421,9 +1434,20 @@ html.theme-dark .biz-card::before {
   }
 
   html:not(.js) .rail {
+    opacity: 0.4;
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 70% 30%, #000 10%, transparent 70%);
+  }
+
+  html:not(.js) .orb {
+    display: block;
+  }
+
+  html:not(.js) .orb-a {
+    background: radial-gradient(circle, rgba(47, 107, 255, 0.26), transparent 68%);
   }
 
   html:not(.js) a {
