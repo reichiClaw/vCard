@@ -1,20 +1,20 @@
 :root {
-  --ink: #140b2e;
-  --ink-soft: #322659;
+  --ink: #0a1228;
+  --ink-soft: #1e2c4a;
   /* 5.5:1 on --paper; WCAG AA for body copy and hints */
-  --mute: #5b5474;
-  --line: rgba(16, 8, 38, 0.1);
-  --line-strong: rgba(16, 8, 38, 0.16);
-  --paper: #f3f1fa;
-  --paper-2: #faf9fd;
-  --accent: #d946ef;
-  --accent-bright: #e879f9;
-  --accent-deep: #a21caf;
-  --accent-soft: #fae8ff;
+  --mute: #4f5b73;
+  --line: rgba(6, 12, 30, 0.1);
+  --line-strong: rgba(6, 12, 30, 0.16);
+  --paper: #f7f9fd;
+  --paper-2: #fbfcfe;
+  --accent: #2f6bff;
+  --accent-bright: #38bdf8;
+  --accent-deep: #1d4ed8;
+  --accent-soft: #dbe6ff;
   /* 6.3:1 on --accent-soft */
-  --accent-text: #86198f;
-  --foil: #e879f9;
-  --foil-soft: rgba(232, 121, 249, 0.55);
+  --accent-text: #173dad;
+  --foil: #38bdf8;
+  --foil-soft: rgba(59, 130, 246, 0.6);
   --white: #ffffff;
   --success: #15803d;
   --warning: #b45309;
@@ -32,7 +32,7 @@
 @property --hue {
   syntax: "<number>";
   inherits: true;
-  initial-value: 265;
+  initial-value: 210;
 }
 
 @property --bg-x {
@@ -47,12 +47,14 @@
   initial-value: 0;
 }
 
+/* Halo oscillates between electric blue (228) and teal (172) */
 @keyframes hue-animation {
-  0% {
-    --hue: 0;
-  }
+  0%,
   100% {
-    --hue: 360;
+    --hue: 228;
+  }
+  50% {
+    --hue: 172;
   }
 }
 
@@ -145,9 +147,9 @@ a:hover {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(120% 80% at 100% 0%, rgba(217, 70, 239, 0.16), transparent 50%),
-    radial-gradient(90% 70% at 0% 100%, rgba(236, 72, 153, 0.07), transparent 55%),
-    linear-gradient(165deg, #eeeaf9 0%, #f6f4fc 45%, #f0e9fa 100%);
+    radial-gradient(120% 80% at 100% 0%, rgba(47, 107, 255, 0.16), transparent 50%),
+    radial-gradient(90% 70% at 0% 100%, rgba(20, 184, 166, 0.07), transparent 55%),
+    linear-gradient(165deg, #e9eef9 0%, #f4f8fd 45%, #e8f3f4 100%);
 }
 
 .orb {
@@ -163,7 +165,7 @@ a:hover {
   height: min(72vw, 580px);
   top: -14%;
   right: -10%;
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.26), transparent 68%);
+  background: radial-gradient(circle, rgba(47, 107, 255, 0.26), transparent 68%);
 }
 
 .orb-b {
@@ -171,7 +173,7 @@ a:hover {
   height: min(50vw, 400px);
   left: -8%;
   bottom: 8%;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.14), transparent 70%);
   animation-delay: -9s;
 }
 
@@ -189,8 +191,8 @@ a:hover {
   inset: 0;
   opacity: 0.4;
   background-image:
-    linear-gradient(rgba(16, 8, 38, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(16, 8, 38, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(6, 12, 30, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 12, 30, 0.03) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse at 70% 30%, #000 10%, transparent 70%);
 }
@@ -397,7 +399,7 @@ html:not(.js) .theme-toggle {
   color: var(--white);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.12) inset,
-    0 14px 32px rgba(16, 8, 38, 0.18);
+    0 14px 32px rgba(6, 12, 30, 0.18);
 }
 
 .btn-primary:hover {
@@ -608,7 +610,7 @@ html:not(.js) .theme-toggle {
   color: var(--white);
   /* Sharp & glowing dark card — near-black violet, text >= 4.5:1 everywhere */
   background:
-    linear-gradient(145deg, #0d0524 0%, #08021a 45%, #05000f 100%);
+    linear-gradient(145deg, #0a1430 0%, #071026 45%, #03060f 100%);
   isolation: isolate;
 }
 
@@ -665,7 +667,7 @@ html:not(.js) .theme-toggle {
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #a29cba;
+  color: #93a1b8;
 }
 
 .card-photo {
@@ -675,7 +677,7 @@ html:not(.js) .theme-toggle {
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.9);
   box-shadow:
-    0 0 0 3px rgba(232, 121, 249, 0.55),
+    0 0 0 3px rgba(59, 130, 246, 0.6),
     0 10px 22px rgba(0, 0, 0, 0.35);
   background: rgba(255, 255, 255, 0.12);
   flex-shrink: 0;
@@ -701,7 +703,7 @@ html:not(.js) .theme-toggle {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #cfc9e8;
+  color: #c5d1e8;
 }
 
 .card-rule {
@@ -739,7 +741,7 @@ html:not(.js) .theme-toggle {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #a29cba;
+  color: #93a1b8;
 }
 
 .card-v {
@@ -771,7 +773,7 @@ html:not(.js) .theme-toggle {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: lowercase;
-  color: #a29cba;
+  color: #93a1b8;
 }
 
 /* Card back: large scannable QR */
@@ -1068,7 +1070,7 @@ html:not(.js) .theme-toggle {
   font-size: 0.9rem;
   font-weight: 700;
   border-radius: 999px;
-  box-shadow: 0 12px 30px rgba(16, 8, 38, 0.22);
+  box-shadow: 0 12px 30px rgba(6, 12, 30, 0.22);
   animation: toast-in 0.28s var(--ease) both;
 }
 
@@ -1256,15 +1258,15 @@ html:not(.js) .theme-toggle {
    1. html.theme-dark  — set by JS (user toggle or "auto" following the OS)
    2. media fallback   — only when JS is unavailable (html:not(.js)) */
 html.theme-dark {
-    --paper: #05000f;
-    --paper-2: #0b0618;
-    --ink: #efedfa;
-    --ink-soft: #cfc9e8;
-    --mute: #a29cba;
+    --paper: #03060f;
+    --paper-2: #0a1424;
+    --ink: #eaf0fb;
+    --ink-soft: #c5d1e8;
+    --mute: #93a1b8;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.24);
-    --accent-soft: #4a044e;
-    --accent-text: #f5d0fe;
+    --accent-soft: #0a1f4d;
+    --accent-text: #8fb4ff;
     --error: #f2a5a5;
 }
 
@@ -1274,9 +1276,9 @@ html.theme-dark {
 
 html.theme-dark .atmosphere {
     background:
-      radial-gradient(120% 80% at 100% 0%, rgba(217, 70, 239, 0.2), transparent 50%),
-      radial-gradient(90% 70% at 0% 100%, rgba(236, 72, 153, 0.08), transparent 55%),
-      linear-gradient(165deg, #060112 0%, #05000f 45%, #0a0320 100%);
+      radial-gradient(120% 80% at 100% 0%, rgba(47, 107, 255, 0.2), transparent 50%),
+      radial-gradient(90% 70% at 0% 100%, rgba(20, 184, 166, 0.08), transparent 55%),
+      linear-gradient(165deg, #020810 0%, #03060f 45%, #041225 100%);
 }
 
 html.theme-dark .grain {
@@ -1291,7 +1293,7 @@ html.theme-dark .rail {
 }
 
 html.theme-dark a {
-    color: #f0abfc;
+    color: #6d9bff;
 }
 
 html.theme-dark a:hover {
@@ -1299,23 +1301,23 @@ html.theme-dark a:hover {
 }
 
 html.theme-dark :focus-visible {
-    outline-color: #e879f9;
+    outline-color: #38bdf8;
 }
 
 html.theme-dark .eyebrow,
 html.theme-dark .guide-num,
 html.theme-dark .guide-list code {
-    color: #f0abfc;
+    color: #6d9bff;
 }
 
 html.theme-dark .skip-link {
     background: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
 }
 
 html.theme-dark .btn-primary {
     background: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
 }
 
@@ -1344,7 +1346,7 @@ html.theme-dark .details-summary:hover {
 }
 
 html.theme-dark .fold-chevron {
-    color: #f0abfc;
+    color: #6d9bff;
 }
 
 html.theme-dark .detail-list .value,
@@ -1361,7 +1363,7 @@ html.theme-dark .copy-btn {
 html.theme-dark .copy-btn:hover {
     background: var(--ink);
     border-color: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
 }
 
 html.theme-dark .guide-list article {
@@ -1370,7 +1372,7 @@ html.theme-dark .guide-list article {
 
 html.theme-dark .toast {
     background: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
 }
 
 html.theme-dark .error-note {
@@ -1384,15 +1386,15 @@ html.theme-dark .biz-card::before {
 
 @media (prefers-color-scheme: dark) {
   html:not(.js) {
-    --paper: #05000f;
-    --paper-2: #0b0618;
-    --ink: #efedfa;
-    --ink-soft: #cfc9e8;
-    --mute: #a29cba;
+    --paper: #03060f;
+    --paper-2: #0a1424;
+    --ink: #eaf0fb;
+    --ink-soft: #c5d1e8;
+    --mute: #93a1b8;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.24);
-    --accent-soft: #4a044e;
-    --accent-text: #f5d0fe;
+    --accent-soft: #0a1f4d;
+    --accent-text: #8fb4ff;
     --error: #f2a5a5;
   }
 
@@ -1402,9 +1404,9 @@ html.theme-dark .biz-card::before {
 
   html:not(.js) .atmosphere {
     background:
-      radial-gradient(120% 80% at 100% 0%, rgba(217, 70, 239, 0.2), transparent 50%),
-      radial-gradient(90% 70% at 0% 100%, rgba(236, 72, 153, 0.08), transparent 55%),
-      linear-gradient(165deg, #060112 0%, #05000f 45%, #0a0320 100%);
+      radial-gradient(120% 80% at 100% 0%, rgba(47, 107, 255, 0.2), transparent 50%),
+      radial-gradient(90% 70% at 0% 100%, rgba(20, 184, 166, 0.08), transparent 55%),
+      linear-gradient(165deg, #020810 0%, #03060f 45%, #041225 100%);
   }
 
   html:not(.js) .grain {
@@ -1419,7 +1421,7 @@ html.theme-dark .biz-card::before {
   }
 
   html:not(.js) a {
-    color: #f0abfc;
+    color: #6d9bff;
   }
 
   html:not(.js) a:hover {
@@ -1427,23 +1429,23 @@ html.theme-dark .biz-card::before {
   }
 
   html:not(.js) :focus-visible {
-    outline-color: #e879f9;
+    outline-color: #38bdf8;
   }
 
   html:not(.js) .eyebrow,
 html:not(.js) .guide-num,
 html:not(.js) .guide-list code {
-    color: #f0abfc;
+    color: #6d9bff;
   }
 
   html:not(.js) .skip-link {
     background: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
   }
 
   html:not(.js) .btn-primary {
     background: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
   }
 
@@ -1472,7 +1474,7 @@ html:not(.js) .guide-list code {
   }
 
   html:not(.js) .fold-chevron {
-    color: #f0abfc;
+    color: #6d9bff;
   }
 
   html:not(.js) .detail-list .value,
@@ -1489,7 +1491,7 @@ html:not(.js) .detail-list .value a {
   html:not(.js) .copy-btn:hover {
     background: var(--ink);
     border-color: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
   }
 
   html:not(.js) .guide-list article {
@@ -1498,7 +1500,7 @@ html:not(.js) .detail-list .value a {
 
   html:not(.js) .toast {
     background: var(--ink);
-    color: #140b2e;
+    color: #0a1228;
   }
 
   html:not(.js) .error-note {

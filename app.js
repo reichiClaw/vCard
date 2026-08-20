@@ -63,9 +63,9 @@
     const metas = document.querySelectorAll('meta[name="theme-color"]');
     metas.forEach((m) => {
       if (mode === "auto") {
-        m.content = m.media.includes("dark") ? "#05000f" : "#a21caf";
+        m.content = m.media.includes("dark") ? "#03060f" : "#1d4ed8";
       } else {
-        m.content = dark ? "#05000f" : "#a21caf";
+        m.content = dark ? "#03060f" : "#1d4ed8";
       }
     });
 
