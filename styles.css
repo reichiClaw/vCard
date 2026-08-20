@@ -2,17 +2,17 @@
   --ink: #0a1228;
   --ink-soft: #1e2c4a;
   /* 5.5:1 on --paper; WCAG AA for body copy and hints */
-  --mute: #4f5b73;
+  --mute: #44615c;
   --line: rgba(6, 12, 30, 0.1);
   --line-strong: rgba(6, 12, 30, 0.16);
-  --paper: #f7f9fd;
-  --paper-2: #fbfcfe;
-  --accent: #2453e6;
+  --paper: #f2f9f8;
+  --paper-2: #f8fcfb;
+  --accent: #0d9488;
   --accent-bright: #38bdf8;
-  --accent-deep: #1e40af;
-  --accent-soft: #c8d9fa;
+  --accent-deep: #0f766e;
+  --accent-soft: #b9e6df;
   /* 6.3:1 on --accent-soft */
-  --accent-text: #132f92;
+  --accent-text: #0b4f49;
   --foil: #38bdf8;
   --foil-soft: rgba(59, 130, 246, 0.6);
   --white: #ffffff;
@@ -147,9 +147,9 @@ a:hover {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(120% 80% at 100% 0%, rgba(47, 107, 255, 0.16), transparent 50%),
-    radial-gradient(90% 70% at 0% 100%, rgba(20, 184, 166, 0.07), transparent 55%),
-    linear-gradient(165deg, #e9eef9 0%, #f4f8fd 45%, #e8f3f4 100%);
+    radial-gradient(120% 80% at 100% 0%, rgba(13, 148, 136, 0.2), transparent 50%),
+    radial-gradient(90% 70% at 0% 100%, rgba(47, 107, 255, 0.06), transparent 55%),
+    linear-gradient(165deg, #dff0ec 0%, #f0f9f7 45%, #ddefe9 100%);
 }
 
 .orb {
@@ -165,7 +165,7 @@ a:hover {
   height: min(72vw, 580px);
   top: -14%;
   right: -10%;
-  background: radial-gradient(circle, rgba(47, 107, 255, 0.26), transparent 68%);
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.3), transparent 68%);
 }
 
 .orb-b {
@@ -1265,6 +1265,9 @@ html.theme-dark {
     --mute: #93a1b8;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.24);
+    --accent: #2453e6;
+    --accent-bright: #38bdf8;
+    --accent-deep: #1e40af;
     --accent-soft: #0a1f4d;
     --accent-text: #8fb4ff;
     --error: #f2a5a5;
@@ -1393,6 +1396,9 @@ html.theme-dark .biz-card::before {
     --mute: #93a1b8;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.24);
+    --accent: #2453e6;
+    --accent-bright: #38bdf8;
+    --accent-deep: #1e40af;
     --accent-soft: #0a1f4d;
     --accent-text: #8fb4ff;
     --error: #f2a5a5;
