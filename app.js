@@ -450,6 +450,7 @@
       });
     };
     const reset = () => {
+      card.classList.remove("tilting");
       card.style.transform = "";
       card.style.setProperty("--gloss-o", "0");
     };
@@ -457,6 +458,7 @@
     // Desktop: card follows the cursor like a held card.
     if (window.matchMedia("(pointer: fine)").matches) {
       stage.addEventListener("pointermove", (e) => {
+        card.classList.add("tilting");
         const r = card.getBoundingClientRect();
         const px = (e.clientX - r.left) / r.width - 0.5;
         const py = (e.clientY - r.top) / r.height - 0.5;
@@ -477,6 +479,7 @@
         "deviceorientation",
         (e) => {
           if (e.beta == null || e.gamma == null) return;
+          card.classList.add("tilting");
           const ry = clamp(e.gamma / 6, 8); // left/right
           const rx = clamp((e.beta - 45) / 8, 8); // natural holding angle ~45°
           apply(rx, ry, 50 + ry * 5, 40 + rx * 5, 0.7);

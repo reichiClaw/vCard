@@ -415,11 +415,18 @@ html:not(.js) .theme-toggle {
   perspective: 1200px;
   transform: rotate3d(0.4, -1, 0.1, 8deg);
   transition: transform 0.55s var(--ease);
-  animation: card-in 1s var(--ease) 0.15s both;
+  /* "backwards" (not "both"): a filled end keyframe would permanently
+     override the inline transform the cursor/gyro tilt sets via JS */
+  animation: card-in 1s var(--ease) 0.15s backwards;
 }
 
 .biz-card:hover {
   transform: rotate3d(0.2, -0.4, 0.05, 3deg) translateY(-4px);
+}
+
+/* While the pointer/gyro drives the card, follow it snappily */
+.biz-card.tilting {
+  transition: transform 0.12s ease-out;
 }
 
 /* Flip mechanics: outer card tilts, inner flips */
