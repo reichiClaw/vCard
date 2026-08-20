@@ -417,6 +417,7 @@ html:not(.js) .theme-toggle {
   width: min(100%, 420px);
   /* Content-driven height so lines never clip (esp. iPhone / dense layouts) */
   aspect-ratio: auto;
+  perspective: 1200px;
   transform: rotate3d(0.4, -1, 0.1, 8deg);
   transition: transform 0.55s var(--ease);
   animation: card-in 1s var(--ease) 0.15s both;
@@ -424,6 +425,52 @@ html:not(.js) .theme-toggle {
 
 .biz-card:hover {
   transform: rotate3d(0.2, -0.4, 0.05, 3deg) translateY(-4px);
+}
+
+/* Flip mechanics: outer card tilts, inner flips */
+.card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.65s var(--ease);
+}
+
+.biz-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front {
+  position: relative;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-back .card-face {
+  height: 100%;
+}
+
+/* Cursor/gyro gloss reflection sweeping over the face */
+.card-gloss {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--card-radius);
+  pointer-events: none;
+  background: radial-gradient(
+    42% 52% at var(--gx, 50%) var(--gy, 35%),
+    rgba(255, 255, 255, 0.28),
+    transparent 70%
+  );
+  opacity: var(--gloss-o, 0);
+  transition: opacity 0.35s var(--ease);
+  mix-blend-mode: soft-light;
 }
 
 .card-edge {
@@ -435,6 +482,34 @@ html:not(.js) .theme-toggle {
   box-shadow:
     0 28px 60px rgba(11, 18, 32, 0.22),
     0 8px 18px rgba(15, 118, 110, 0.18);
+}
+
+/* Periodic glint travelling along the foil edge (visible on the 2px ring) */
+.card-edge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 250, 235, 0.9) 50%,
+    transparent 58%
+  );
+  background-size: 320% 100%;
+  animation: foil-sweep 9s linear infinite;
+}
+
+@keyframes foil-sweep {
+  0% {
+    background-position: 160% 0;
+  }
+  16% {
+    background-position: -160% 0;
+  }
+  100% {
+    background-position: -160% 0;
+  }
 }
 
 .card-face {
@@ -614,6 +689,76 @@ html:not(.js) .theme-toggle {
   letter-spacing: 0.08em;
   text-transform: lowercase;
   color: rgba(255, 255, 255, 0.75);
+}
+
+.flip-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.flip-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.flip-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Card back: large scannable QR */
+.card-back-face {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 0.5rem;
+}
+
+.card-back-body {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.65rem;
+}
+
+.qrcode.qrcode-back {
+  width: min(190px, 55%);
+  height: auto;
+  aspect-ratio: 1;
+  padding: 0.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.card-back-caption {
+  margin: 0;
+  padding: 0.22rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+
+@media (pointer: coarse) {
+  .flip-btn {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 /* Flat QR directly beside CTA buttons — no tilt for crisp scanning.

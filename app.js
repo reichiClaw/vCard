@@ -375,18 +375,19 @@
   }
 
   /**
+   * @param {HTMLElement|null} target
    * @param {string} vcard
    */
-  function renderQr(vcard) {
-    if (typeof qrcode !== "function" || !els.qrcode) return false;
+  function renderQrInto(target, vcard) {
+    if (typeof qrcode !== "function" || !target) return false;
 
     const qr = qrcode(0, "M");
     qr.addData(vcard);
     qr.make();
 
     // Larger module size keeps the QR sharp when scaled up outside the card.
-    els.qrcode.innerHTML = qr.createSvgTag(6, 2);
-    const svg = els.qrcode.querySelector("svg");
+    target.innerHTML = qr.createSvgTag(6, 2);
+    const svg = target.querySelector("svg");
     if (svg) {
       svg.removeAttribute("width");
       svg.removeAttribute("height");
@@ -401,6 +402,97 @@
     }
     return true;
   }
+
+  /**
+   * @param {string} vcard
+   */
+  function renderQr(vcard) {
+    return renderQrInto(els.qrcode, vcard);
+  }
+
+  /* ---------- Card animations: flip + tilt/gloss + gyro ---------- */
+
+  function setupCardFlip() {
+    const card = document.getElementById("biz-card");
+    const front = document.getElementById("card-front");
+    const back = document.getElementById("card-back");
+    if (!card || !front || !back) return;
+
+    let flipped = false;
+    const setFlipped = (v) => {
+      flipped = v;
+      card.classList.toggle("flipped", flipped);
+      front.toggleAttribute("inert", flipped);
+      back.toggleAttribute("inert", !flipped);
+    };
+    setFlipped(location.hash === "#qr");
+
+    card.addEventListener("click", (e) => {
+      // Links on the card keep working; anything else flips.
+      if (e.target.closest("a")) return;
+      setFlipped(!flipped);
+    });
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && flipped) setFlipped(false);
+    });
+  }
+
+  function setupCardTilt() {
+    const card = document.getElementById("biz-card");
+    const stage = document.querySelector(".hero-stage");
+    if (!card || !stage) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
+    const apply = (rx, ry, gx, gy, glossO) => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        raf = 0;
+        card.style.transform = `rotate3d(1, 0, 0, ${rx.toFixed(2)}deg) rotate3d(0, 1, 0, ${ry.toFixed(2)}deg)`;
+        card.style.setProperty("--gx", `${gx.toFixed(1)}%`);
+        card.style.setProperty("--gy", `${gy.toFixed(1)}%`);
+        card.style.setProperty("--gloss-o", String(glossO));
+      });
+    };
+    const reset = () => {
+      card.style.transform = "";
+      card.style.setProperty("--gloss-o", "0");
+    };
+
+    // Desktop: card follows the cursor like a held card.
+    if (window.matchMedia("(pointer: fine)").matches) {
+      stage.addEventListener("pointermove", (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        apply(-py * 10, px * 12, (px + 0.5) * 100, (py + 0.5) * 100, 0.85);
+      });
+      stage.addEventListener("pointerleave", reset);
+    }
+
+    // Mobile: gyroscope tilt where no permission prompt is required
+    // (iOS 13+ needs an explicit permission dialog — skipped on purpose).
+    const canGyro =
+      typeof window.DeviceOrientationEvent !== "undefined" &&
+      typeof window.DeviceOrientationEvent.requestPermission !== "function" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    if (canGyro) {
+      const clamp = (v, m) => Math.max(-m, Math.min(m, v));
+      window.addEventListener(
+        "deviceorientation",
+        (e) => {
+          if (e.beta == null || e.gamma == null) return;
+          const ry = clamp(e.gamma / 6, 8); // left/right
+          const rx = clamp((e.beta - 45) / 8, 8); // natural holding angle ~45°
+          apply(rx, ry, 50 + ry * 5, 40 + rx * 5, 0.7);
+        },
+        { passive: true }
+      );
+    }
+  }
+
+  setupCardFlip();
+  setupCardTilt();
 
   /**
    * @param {Record<string, any>} contact
@@ -744,6 +836,9 @@
     document.title = `${name || "Contact"} — reichi.id`;
     renderDetails(contact);
     configurePlatform(platform, contact, vcard);
+
+    // Back of the card always carries a scannable QR, on every platform.
+    renderQrInto(document.getElementById("qrcode-back"), vcard);
 
     // Nav link / deep link to #details should reveal the folded directory.
     if (els.detailsFold) {
