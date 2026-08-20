@@ -429,6 +429,13 @@ html:not(.js) .theme-toggle {
   transition: transform 0.12s ease-out;
 }
 
+/* Flipped card sits perfectly flat so the QR stays sharp and scannable.
+   !important also beats the inline transform set by the tilt JS. */
+.biz-card.flipped,
+.biz-card.flipped:hover {
+  transform: none !important;
+}
+
 /* Flip mechanics: outer card tilts, inner flips */
 .card-inner {
   position: relative;
