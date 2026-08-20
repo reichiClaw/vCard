@@ -1,20 +1,20 @@
 :root {
-  --ink: #0b1220;
-  --ink-soft: #243044;
+  --ink: #140b2e;
+  --ink-soft: #322659;
   /* 5.5:1 on --paper; WCAG AA for body copy and hints */
-  --mute: #51606f;
-  --line: rgba(11, 18, 32, 0.1);
-  --line-strong: rgba(11, 18, 32, 0.16);
-  --paper: #e8eef4;
-  --paper-2: #f4f7fa;
-  --accent: #0d9488;
-  --accent-bright: #14b8a6;
-  --accent-deep: #0f766e;
-  --accent-soft: #d7edeb;
+  --mute: #5b5474;
+  --line: rgba(16, 8, 38, 0.1);
+  --line-strong: rgba(16, 8, 38, 0.16);
+  --paper: #f3f1fa;
+  --paper-2: #faf9fd;
+  --accent: #7c3aed;
+  --accent-bright: #a78bfa;
+  --accent-deep: #6d28d9;
+  --accent-soft: #e7e1f8;
   /* 6.3:1 on --accent-soft */
-  --accent-text: #0b5e56;
-  --foil: #c5a46a;
-  --foil-soft: rgba(197, 164, 106, 0.55);
+  --accent-text: #5b21b6;
+  --foil: #b9a8f0;
+  --foil-soft: rgba(185, 168, 240, 0.55);
   --white: #ffffff;
   --success: #15803d;
   --warning: #b45309;
@@ -24,6 +24,68 @@
   --font-body: "Manrope", "Helvetica Neue", sans-serif;
   --max: 1120px;
   --card-radius: 18px;
+  --glow-speed: 6s;
+}
+
+/* Registered properties let the hue/border-spot interpolate smoothly
+   (falls back to a static violet glow where unsupported) */
+@property --hue {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 265;
+}
+
+@property --bg-x {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --bg-y {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes hue-animation {
+  0% {
+    --hue: 0;
+  }
+  100% {
+    --hue: 360;
+  }
+}
+
+@keyframes rotate-bg {
+  0% {
+    --bg-x: 0;
+    --bg-y: 0;
+  }
+  25% {
+    --bg-x: 100;
+    --bg-y: 0;
+  }
+  50% {
+    --bg-x: 100;
+    --bg-y: 100;
+  }
+  75% {
+    --bg-x: 0;
+    --bg-y: 100;
+  }
+  100% {
+    --bg-x: 0;
+    --bg-y: 0;
+  }
+}
+
+@keyframes glow-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 *,
@@ -92,9 +154,9 @@ a:hover {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(120% 80% at 100% 0%, rgba(20, 184, 166, 0.16), transparent 50%),
-    radial-gradient(90% 70% at 0% 100%, rgba(11, 18, 32, 0.08), transparent 55%),
-    linear-gradient(165deg, #e4ebf3 0%, #f2f6f9 45%, #e7f2ef 100%);
+    radial-gradient(120% 80% at 100% 0%, rgba(139, 92, 246, 0.16), transparent 50%),
+    radial-gradient(90% 70% at 0% 100%, rgba(236, 72, 153, 0.07), transparent 55%),
+    linear-gradient(165deg, #eeeaf9 0%, #f6f4fc 45%, #f0e9fa 100%);
 }
 
 .orb {
@@ -110,7 +172,7 @@ a:hover {
   height: min(72vw, 580px);
   top: -14%;
   right: -10%;
-  background: radial-gradient(circle, rgba(13, 148, 136, 0.28), transparent 68%);
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.26), transparent 68%);
 }
 
 .orb-b {
@@ -118,7 +180,7 @@ a:hover {
   height: min(50vw, 400px);
   left: -8%;
   bottom: 8%;
-  background: radial-gradient(circle, rgba(197, 164, 106, 0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.14), transparent 70%);
   animation-delay: -9s;
 }
 
@@ -136,8 +198,8 @@ a:hover {
   inset: 0;
   opacity: 0.4;
   background-image:
-    linear-gradient(rgba(11, 18, 32, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(11, 18, 32, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(16, 8, 38, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 8, 38, 0.03) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse at 70% 30%, #000 10%, transparent 70%);
 }
@@ -344,7 +406,7 @@ html:not(.js) .theme-toggle {
   color: var(--white);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.12) inset,
-    0 14px 32px rgba(11, 18, 32, 0.18);
+    0 14px 32px rgba(16, 8, 38, 0.18);
 }
 
 .btn-primary:hover {
@@ -399,12 +461,24 @@ html:not(.js) .theme-toggle {
 
 .card-glow {
   position: absolute;
-  width: min(86%, 420px);
-  height: min(70%, 320px);
+  inset: 0;
+  margin: auto;
+  width: 40%;
+  height: 40%;
+  pointer-events: none;
+  animation: glow-orbit var(--glow-speed) linear infinite;
+}
+
+.card-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.35), transparent 70%);
-  filter: blur(28px);
-  animation: pulse-glow 5.5s var(--ease) infinite alternate;
+  background: hsl(calc(var(--hue) * 1deg) 100% 60%);
+  filter: blur(52px);
+  transform: translateY(-115%) scale(1.15);
+  animation: hue-animation var(--glow-speed) linear infinite;
+  opacity: 0.75;
 }
 
 .biz-card {
@@ -489,11 +563,22 @@ html:not(.js) .theme-toggle {
   position: absolute;
   inset: -2px;
   border-radius: calc(var(--card-radius) + 2px);
+  /* Hue-cycling spot circling the border — the pen's "sharp" glow edge */
   background:
-    linear-gradient(135deg, var(--foil) 0%, var(--accent-bright) 38%, var(--accent-deep) 72%, var(--foil) 100%);
+    #292929
+    radial-gradient(
+      30% 30% at calc(var(--bg-x) * 1%) calc(var(--bg-y) * 1%),
+      hsl(calc(var(--hue) * 1deg) 100% 90%) 0%,
+      hsl(calc(var(--hue) * 1deg) 100% 80%) 20%,
+      hsl(calc(var(--hue) * 1deg) 100% 60%) 40%,
+      transparent 100%
+    );
+  animation:
+    hue-animation var(--glow-speed) linear infinite,
+    rotate-bg var(--glow-speed) linear infinite;
   box-shadow:
-    0 28px 60px rgba(11, 18, 32, 0.22),
-    0 8px 18px rgba(15, 118, 110, 0.18);
+    0 28px 60px rgba(0, 0, 0, 0.4),
+    0 0 26px hsla(calc(var(--hue) * 1deg) 100% 60% / 0.28);
 }
 
 /* Periodic glint travelling along the foil edge (visible on the 2px ring) */
@@ -505,7 +590,7 @@ html:not(.js) .theme-toggle {
   background: linear-gradient(
     115deg,
     transparent 42%,
-    rgba(255, 250, 235, 0.9) 50%,
+    rgba(245, 240, 255, 0.9) 50%,
     transparent 58%
   );
   background-size: 320% 100%;
@@ -535,9 +620,9 @@ html:not(.js) .theme-toggle {
   gap: 0.7rem;
   overflow: visible;
   color: var(--white);
-  /* Darker gradient start keeps white card text at >= 4.5:1 everywhere */
+  /* Sharp & glowing dark card — near-black violet, text >= 4.5:1 everywhere */
   background:
-    linear-gradient(145deg, #0f766e 0%, #115e59 45%, #0b1220 100%);
+    linear-gradient(145deg, #0d0524 0%, #08021a 45%, #05000f 100%);
   isolation: isolate;
 }
 
@@ -594,7 +679,7 @@ html:not(.js) .theme-toggle {
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.95);
+  color: #a29cba;
 }
 
 .card-photo {
@@ -604,8 +689,8 @@ html:not(.js) .theme-toggle {
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.9);
   box-shadow:
-    0 0 0 3px rgba(197, 164, 106, 0.45),
-    0 10px 22px rgba(0, 0, 0, 0.28);
+    0 0 0 3px rgba(167, 139, 250, 0.5),
+    0 10px 22px rgba(0, 0, 0, 0.35);
   background: rgba(255, 255, 255, 0.12);
   flex-shrink: 0;
 }
@@ -630,7 +715,7 @@ html:not(.js) .theme-toggle {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: #cfc9e8;
 }
 
 .card-rule {
@@ -668,7 +753,7 @@ html:not(.js) .theme-toggle {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.88);
+  color: #a29cba;
 }
 
 .card-v {
@@ -700,7 +785,7 @@ html:not(.js) .theme-toggle {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: lowercase;
-  color: rgba(255, 255, 255, 0.75);
+  color: #a29cba;
 }
 
 /* Card back: large scannable QR */
@@ -997,7 +1082,7 @@ html:not(.js) .theme-toggle {
   font-size: 0.9rem;
   font-weight: 700;
   border-radius: 999px;
-  box-shadow: 0 12px 30px rgba(11, 18, 32, 0.22);
+  box-shadow: 0 12px 30px rgba(16, 8, 38, 0.22);
   animation: toast-in 0.28s var(--ease) both;
 }
 
@@ -1024,17 +1109,6 @@ html:not(.js) .theme-toggle {
   to {
     opacity: 1;
     transform: rotate3d(0.4, -1, 0.1, 8deg) translateY(0) scale(1);
-  }
-}
-
-@keyframes pulse-glow {
-  from {
-    opacity: 0.55;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.05);
   }
 }
 
@@ -1196,15 +1270,15 @@ html:not(.js) .theme-toggle {
    1. html.theme-dark  — set by JS (user toggle or "auto" following the OS)
    2. media fallback   — only when JS is unavailable (html:not(.js)) */
 html.theme-dark {
-    --paper: #0e1520;
-    --paper-2: #121a26;
-    --ink: #e9eef5;
-    --ink-soft: #c8d2de;
-    --mute: #9aa8b7;
+    --paper: #05000f;
+    --paper-2: #0b0618;
+    --ink: #efedfa;
+    --ink-soft: #cfc9e8;
+    --mute: #a29cba;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.24);
-    --accent-soft: #123c38;
-    --accent-text: #7fd8cc;
+    --accent-soft: #251b47;
+    --accent-text: #c7b8fa;
     --error: #f2a5a5;
 }
 
@@ -1214,9 +1288,9 @@ html.theme-dark {
 
 html.theme-dark .atmosphere {
     background:
-      radial-gradient(120% 80% at 100% 0%, rgba(20, 184, 166, 0.14), transparent 50%),
-      radial-gradient(90% 70% at 0% 100%, rgba(197, 164, 106, 0.06), transparent 55%),
-      linear-gradient(165deg, #0c1219 0%, #0e1520 45%, #0d1a21 100%);
+      radial-gradient(120% 80% at 100% 0%, rgba(124, 58, 237, 0.2), transparent 50%),
+      radial-gradient(90% 70% at 0% 100%, rgba(236, 72, 153, 0.08), transparent 55%),
+      linear-gradient(165deg, #060112 0%, #05000f 45%, #0a0320 100%);
 }
 
 html.theme-dark .grain {
@@ -1231,7 +1305,7 @@ html.theme-dark .rail {
 }
 
 html.theme-dark a {
-    color: #57cfc2;
+    color: #b4a5f8;
 }
 
 html.theme-dark a:hover {
@@ -1239,23 +1313,23 @@ html.theme-dark a:hover {
 }
 
 html.theme-dark :focus-visible {
-    outline-color: #2dd4bf;
+    outline-color: #a78bfa;
 }
 
 html.theme-dark .eyebrow,
 html.theme-dark .guide-num,
 html.theme-dark .guide-list code {
-    color: #57cfc2;
+    color: #b4a5f8;
 }
 
 html.theme-dark .skip-link {
     background: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
 }
 
 html.theme-dark .btn-primary {
     background: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
 }
 
@@ -1284,7 +1358,7 @@ html.theme-dark .details-summary:hover {
 }
 
 html.theme-dark .fold-chevron {
-    color: #57cfc2;
+    color: #b4a5f8;
 }
 
 html.theme-dark .detail-list .value,
@@ -1301,7 +1375,7 @@ html.theme-dark .copy-btn {
 html.theme-dark .copy-btn:hover {
     background: var(--ink);
     border-color: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
 }
 
 html.theme-dark .guide-list article {
@@ -1310,7 +1384,7 @@ html.theme-dark .guide-list article {
 
 html.theme-dark .toast {
     background: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
 }
 
 html.theme-dark .error-note {
@@ -1319,20 +1393,20 @@ html.theme-dark .error-note {
 }
 
 html.theme-dark .card-glow {
-    opacity: 0.55;
+    opacity: 1;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.js) {
-    --paper: #0e1520;
-    --paper-2: #121a26;
-    --ink: #e9eef5;
-    --ink-soft: #c8d2de;
-    --mute: #9aa8b7;
+    --paper: #05000f;
+    --paper-2: #0b0618;
+    --ink: #efedfa;
+    --ink-soft: #cfc9e8;
+    --mute: #a29cba;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.24);
-    --accent-soft: #123c38;
-    --accent-text: #7fd8cc;
+    --accent-soft: #251b47;
+    --accent-text: #c7b8fa;
     --error: #f2a5a5;
   }
 
@@ -1342,9 +1416,9 @@ html.theme-dark .card-glow {
 
   html:not(.js) .atmosphere {
     background:
-      radial-gradient(120% 80% at 100% 0%, rgba(20, 184, 166, 0.14), transparent 50%),
-      radial-gradient(90% 70% at 0% 100%, rgba(197, 164, 106, 0.06), transparent 55%),
-      linear-gradient(165deg, #0c1219 0%, #0e1520 45%, #0d1a21 100%);
+      radial-gradient(120% 80% at 100% 0%, rgba(124, 58, 237, 0.2), transparent 50%),
+      radial-gradient(90% 70% at 0% 100%, rgba(236, 72, 153, 0.08), transparent 55%),
+      linear-gradient(165deg, #060112 0%, #05000f 45%, #0a0320 100%);
   }
 
   html:not(.js) .grain {
@@ -1359,7 +1433,7 @@ html.theme-dark .card-glow {
   }
 
   html:not(.js) a {
-    color: #57cfc2;
+    color: #b4a5f8;
   }
 
   html:not(.js) a:hover {
@@ -1367,23 +1441,23 @@ html.theme-dark .card-glow {
   }
 
   html:not(.js) :focus-visible {
-    outline-color: #2dd4bf;
+    outline-color: #a78bfa;
   }
 
   html:not(.js) .eyebrow,
 html:not(.js) .guide-num,
 html:not(.js) .guide-list code {
-    color: #57cfc2;
+    color: #b4a5f8;
   }
 
   html:not(.js) .skip-link {
     background: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
   }
 
   html:not(.js) .btn-primary {
     background: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
   }
 
@@ -1412,7 +1486,7 @@ html:not(.js) .guide-list code {
   }
 
   html:not(.js) .fold-chevron {
-    color: #57cfc2;
+    color: #b4a5f8;
   }
 
   html:not(.js) .detail-list .value,
@@ -1429,7 +1503,7 @@ html:not(.js) .detail-list .value a {
   html:not(.js) .copy-btn:hover {
     background: var(--ink);
     border-color: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
   }
 
   html:not(.js) .guide-list article {
@@ -1438,7 +1512,7 @@ html:not(.js) .detail-list .value a {
 
   html:not(.js) .toast {
     background: var(--ink);
-    color: #0b1220;
+    color: #140b2e;
   }
 
   html:not(.js) .error-note {
@@ -1447,7 +1521,7 @@ html:not(.js) .detail-list .value a {
   }
 
   html:not(.js) .card-glow {
-    opacity: 0.55;
+    opacity: 1;
   }
 }
 
