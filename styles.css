@@ -7,12 +7,12 @@
   --line-strong: rgba(6, 12, 30, 0.16);
   --paper: #f7f9fd;
   --paper-2: #fbfcfe;
-  --accent: #2f6bff;
+  --accent: #2453e6;
   --accent-bright: #38bdf8;
-  --accent-deep: #1d4ed8;
-  --accent-soft: #dbe6ff;
+  --accent-deep: #1e40af;
+  --accent-soft: #c8d9fa;
   /* 6.3:1 on --accent-soft */
-  --accent-text: #173dad;
+  --accent-text: #132f92;
   --foil: #38bdf8;
   --foil-soft: rgba(59, 130, 246, 0.6);
   --white: #ffffff;
