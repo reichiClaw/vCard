@@ -7,7 +7,7 @@ Fast, static contact page for [reichi.id](https://reichi.id). It detects the vis
 | Platform | Best option | Why |
 | --- | --- | --- |
 | **iOS / iPadOS** | **Auto-open `.vcf`** after page load | The HTML page renders first (Add to Contacts, Call, Send email), then Safari opens the contact sheet. Dismissing the sheet leaves those actions available. Use [`/?page=1`](./?page=1) to skip auto-open. |
-| **Android (on the phone)** | **Android `INSERT` intent** | `.vcf` files only download on Android — they do not open a save sheet. Chrome can launch `android.intent.action.INSERT` with `S.name` / `S.email` / `S.phone` extras so the native Contacts editor opens pre-filled. Fallback: copy details. |
+| **Android (on the phone)** | **Web Share with the `.vcf` file** | `navigator.share({ files })` opens the system share sheet — picking *Contacts* imports the complete card **including the photo**. Falls back to the pre-filled editor (`android.intent.action.INSERT`), then to copy details. |
 | **Desktop → phone** | **Scan the QR** | QR shines when this page is on a laptop/monitor and the phone’s camera does the save. |
 | **macOS** | Download `.vcf` | Opens in Contacts.app. QR is offered for saving onto a phone. |
 | **Windows** | Download `.vcf` | Opens in People / Outlook. QR for phone save. |

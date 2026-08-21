@@ -716,14 +716,51 @@
 
     if (platform === "android") {
       const intentUrl = buildAndroidInsertIntent(contact);
+
+      // Prefetch the full vCard (with photo) so navigator.share can be
+      // called while the tap's transient activation is still valid.
+      const vcfFilePromise = fetch(new URL("contact.vcf", location.href), {
+        cache: "force-cache",
+      })
+        .then((r) => (r.ok ? r.blob() : null))
+        .then((blob) =>
+          blob ? new File([blob], filename, { type: "text/vcard" }) : null
+        )
+        .catch(() => null);
+
       els.headline.textContent = "Add me to your contacts";
       els.lede.textContent =
-        "On Android, this opens the Contacts app with my details already filled in — then tap Save.";
+        "On Android, save the full card via the share sheet — photo included.";
       bindCta(els.primaryCta, {
         label: "Add to Contacts",
         className: "btn btn-primary",
         href: intentUrl,
         icon: "userPlus",
+        onClick: (e) => {
+          e.preventDefault();
+          void (async () => {
+            // 1) Share sheet with the .vcf file: full import incl. photo,
+            //    works in Chrome, Samsung Internet, and most in-app browsers.
+            const file = await vcfFilePromise;
+            const canShareFile =
+              file &&
+              typeof navigator.share === "function" &&
+              typeof navigator.canShare === "function" &&
+              navigator.canShare({ files: [file] });
+
+            if (canShareFile) {
+              try {
+                await navigator.share({ files: [file], title: "Save contact" });
+                return;
+              } catch (err) {
+                // User closed the sheet on purpose — don't force the editor.
+                if (err && err.name === "AbortError") return;
+              }
+            }
+            // 2) Fallback: pre-filled contact editor (no photo support).
+            window.location.href = intentUrl;
+          })();
+        },
       });
       bindCta(els.secondaryCta, {
         label: "Copy details",
@@ -735,7 +772,7 @@
       });
       wireQuickActions(contact);
       els.platformHint.textContent =
-        "Uses Android’s Add Contact screen in Chrome. If it’s blocked, copy the details below.";
+        "Opens the share sheet — pick Contacts to save everything. If unavailable, the pre-filled editor opens instead.";
       return;
     }
 
