@@ -791,8 +791,29 @@
       `${contact.firstName || ""} ${contact.lastName || ""}`.trim();
 
     els.footerName.textContent = name || "Contact";
-    if (els.brand) els.brand.textContent = name || "Contact";
-    if (els.visualName) els.visualName.textContent = name || "Contact";
+    /**
+     * Render the name stacked as: First / "nickname" / Last.
+     * @param {HTMLElement|null} el
+     */
+    const fillStackedName = (el) => {
+      if (!el) return;
+      if (contact.firstName && contact.lastName) {
+        el.innerHTML = "";
+        const line = (text, cls) => {
+          const s = document.createElement("span");
+          s.textContent = text;
+          if (cls) s.className = cls;
+          el.appendChild(s);
+        };
+        line(contact.firstName);
+        if (contact.nickname) line(`"${contact.nickname}"`, "name-nick");
+        line(contact.lastName);
+      } else {
+        el.textContent = name || "Contact";
+      }
+    };
+    fillStackedName(els.brand);
+    fillStackedName(els.visualName);
     if (els.visualMeta) {
       const meta = [contact.role || contact.title, contact.organization]
         .filter(Boolean)

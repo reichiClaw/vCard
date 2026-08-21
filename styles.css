@@ -312,6 +312,11 @@ html:not(.js) .theme-toggle {
   justify-content: center;
 }
 
+.brand span,
+.card-name span {
+  display: block;
+}
+
 .brand {
   margin: 0 0 1rem;
   max-width: 12ch;
