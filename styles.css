@@ -697,7 +697,8 @@ html:not(.js) .theme-toggle {
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  /* Lowercase: it's a domain now, not a company wordmark */
+  text-transform: lowercase;
   color: #93a1b8;
 }
 

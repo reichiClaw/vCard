@@ -821,7 +821,14 @@
       els.visualMeta.textContent = meta || contact.nickname || "reichi.id";
     }
     if (els.cardOrg) {
-      els.cardOrg.textContent = contact.organization || "reichi.id";
+      // Card header shows the personal domain, not the company name.
+      let orgLabel = "reichi.com";
+      if (contact.website) {
+        try {
+          orgLabel = new URL(contact.website).hostname.replace(/^www\./, "");
+        } catch {}
+      }
+      els.cardOrg.textContent = orgLabel;
     }
     if (els.cardNick) {
       els.cardNick.textContent = contact.nickname || "reichi";
