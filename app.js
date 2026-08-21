@@ -817,6 +817,71 @@
   }
 
   /**
+   * Detect in-app browsers (Instagram, Facebook, TikTok, generic webviews).
+   * Named tokens first, then platform webview signatures:
+   * Android webviews carry "; wv)", iOS webviews lack the Safari/ token.
+   */
+  function isInAppBrowser() {
+    const ua = navigator.userAgent || "";
+    if (
+      /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Line\/|MicroMessenger|Snapchat|musical_ly|TikTok|Bytedance|LinkedInApp|Pinterest\/(Android|iOS)/i.test(
+        ua
+      )
+    ) {
+      return true;
+    }
+    if (/Android/i.test(ua) && /;\s?wv\)/.test(ua)) return true;
+    if (
+      /iPhone|iPad|iPod/i.test(ua) &&
+      /AppleWebKit/i.test(ua) &&
+      !/Safari\//i.test(ua) &&
+      !/CriOS|FxiOS|EdgiOS|OPiOS|OPT\//i.test(ua)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Mobile + in-app browser only: suggest opening the page in the
+   * real browser, where share sheet / contact import work reliably.
+   * @param {Platform} platform
+   */
+  function setupInAppHint(platform) {
+    const banner = document.getElementById("iab-banner");
+    if (!banner) return false;
+    const mobile = platform === "ios" || platform === "android";
+    if (!mobile || !isInAppBrowser()) return false;
+
+    let dismissed = false;
+    try {
+      dismissed = sessionStorage.getItem("iab-dismissed") === "1";
+    } catch {}
+    if (dismissed) return true;
+
+    const openLink = document.getElementById("iab-open");
+    const text = document.getElementById("iab-text");
+    if (platform === "android" && openLink) {
+      // Many Android webviews honor an explicit VIEW intent to the browser.
+      openLink.href = `intent://${location.host}${location.pathname}${location.search}#Intent;scheme=https;action=android.intent.action.VIEW;end`;
+      openLink.hidden = false;
+    } else if (text) {
+      text.textContent =
+        "You're in an in-app browser — use the \u22EF menu and choose \u201COpen in external browser\u201D to save the contact reliably.";
+    }
+
+    document.getElementById("iab-dismiss")?.addEventListener("click", () => {
+      banner.hidden = true;
+      try {
+        sessionStorage.setItem("iab-dismissed", "1");
+      } catch {}
+    });
+
+    banner.hidden = false;
+    return true;
+  }
+
+  /**
    * Open the vCard after the HTML UI is ready. Prefer a history entry so
    * dismissing / going back still shows Call + Email on this page.
    * @param {string} href
@@ -834,6 +899,7 @@
       params.has("html") ||
       params.get("view") === "page";
     const { platform } = detectPlatform();
+    const inAppHintShown = setupInAppHint(platform);
 
     const response = await fetch("./contact.json", { cache: "no-cache" });
     if (!response.ok) {
@@ -952,8 +1018,9 @@
         contact.filename || "contact.vcf",
         platform === "ios" ? "open" : "download"
       );
-    } else if (platform === "ios" && !skipAutoVcf) {
+    } else if (platform === "ios" && !skipAutoVcf && !inAppHintShown) {
       // Page (with Call / Email) is already painted; then open the sheet.
+      // Skipped in in-app browsers where navigating to a vCard fails.
       openVCardSheet(new URL("contact.vcf", location.href).href);
     }
   }

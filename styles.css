@@ -290,6 +290,78 @@ html:not(.js) .theme-toggle {
   }
 }
 
+/* In-app browser hint (mobile only, injected via JS) */
+
+.iab-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: var(--max);
+  margin: 0 auto 0.5rem;
+  padding: 0.7rem clamp(1rem, 3vw, 1.25rem);
+  margin-inline: clamp(1rem, 4vw, 2.5rem);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  animation: rise 0.5s var(--ease) both;
+}
+
+.iab-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--accent-deep);
+}
+
+.iab-text {
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+.iab-open {
+  flex-shrink: 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.iab-dismiss {
+  appearance: none;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mute);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.iab-dismiss:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+
+@media (max-width: 520px) {
+  .iab-banner {
+    flex-wrap: wrap;
+  }
+
+  .iab-open {
+    margin-left: calc(18px + 0.65rem);
+  }
+}
+
 /* Hero */
 
 .hero {
