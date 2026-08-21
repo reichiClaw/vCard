@@ -2,17 +2,17 @@
   --ink: #0a1228;
   --ink-soft: #1e2c4a;
   /* 5.5:1 on --paper; WCAG AA for body copy and hints */
-  --mute: #4a5a5c;
+  --mute: #4f5b73;
   --line: rgba(6, 12, 30, 0.1);
   --line-strong: rgba(6, 12, 30, 0.16);
   --paper: #f7fafa;
   --paper-2: #fcfeff;
-  --accent: #0e8a8d;
-  --accent-bright: #04edf0;
-  --accent-deep: #0b7276;
-  --accent-soft: #04edf0;
+  --accent: #2453e6;
+  --accent-bright: #2f6bff;
+  --accent-deep: #1e40af;
+  --accent-soft: #2453e6;
   /* 6.3:1 on --accent-soft */
-  --accent-text: #05383a;
+  --accent-text: #ffffff;
   --foil: #38bdf8;
   --foil-soft: rgba(59, 130, 246, 0.6);
   --white: #ffffff;
@@ -25,8 +25,8 @@
   --max: 1120px;
   --card-radius: 18px;
   --glow-speed: 6s;
-  --btn-primary-bg: #04edf0;
-  --btn-primary-fg: #052e30;
+  --btn-primary-bg: #2453e6;
+  --btn-primary-fg: #ffffff;
 }
 
 /* Registered properties let the hue/border-spot interpolate smoothly
@@ -150,7 +150,7 @@ a:hover {
   pointer-events: none;
   /* Light: clean paper with one crisp cyan hint, pattern comes from .rail dots */
   background:
-    radial-gradient(60% 45% at 100% 0%, rgba(4, 237, 240, 0.14), transparent 62%),
+    radial-gradient(60% 45% at 100% 0%, rgba(47, 107, 255, 0.12), transparent 62%),
     #f7fafa;
 }
 
@@ -194,7 +194,7 @@ a:hover {
   position: absolute;
   inset: 0;
   opacity: 0.55;
-  background-image: radial-gradient(rgba(5, 46, 48, 0.16) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(6, 18, 44, 0.15) 1.2px, transparent 1.2px);
   background-size: 22px 22px;
   mask-image: radial-gradient(ellipse at 65% 35%, #000 25%, transparent 78%);
 }
