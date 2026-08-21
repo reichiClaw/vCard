@@ -486,5 +486,6 @@ ROLE;CHARSET=UTF-8:CEO
 ORG;CHARSET=UTF-8:BleedingStar
 URL;CHARSET=UTF-8:https://www.reichi.com
 URL;TYPE=WORK;CHARSET=UTF-8:https://www.bleedingstar.at
+X-SOCIALPROFILE;TYPE=instagram:https://www.instagram.com/the_reichi
 REV:2026-08-11T15:15:00Z
 END:VCARD

@@ -569,6 +569,14 @@
         copy: contact.websiteWork,
       });
     }
+    if (contact.instagram) {
+      rows.push({
+        label: "Instagram",
+        value: contact.instagram.replace(/^https?:\/\/(www\.)?/, ""),
+        href: contact.instagram,
+        copy: contact.instagram,
+      });
+    }
     if (contact.github) {
       rows.push({
         label: "GitHub",
