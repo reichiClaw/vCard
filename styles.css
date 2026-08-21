@@ -1269,9 +1269,9 @@ html.theme-dark {
     --line-strong: rgba(255, 255, 255, 0.24);
     --accent: #2453e6;
     --accent-bright: #38bdf8;
-    --accent-deep: #0f766e;
-    --accent-soft: #06302e;
-    --accent-text: #5eead4;
+    --accent-deep: #1e40af;
+    --accent-soft: #0a1f4d;
+    --accent-text: #6d9bff;
     --error: #f2a5a5;
 }
 
@@ -1405,7 +1405,7 @@ html.theme-dark .btn-soft {
 }
 
 html.theme-dark .card-v {
-    color: #5eead4;
+    color: #6d9bff;
 }
 
 html.theme-dark .card-v:hover {
@@ -1423,9 +1423,9 @@ html.theme-dark .card-v:hover {
     --line-strong: rgba(255, 255, 255, 0.24);
     --accent: #2453e6;
     --accent-bright: #38bdf8;
-    --accent-deep: #0f766e;
-    --accent-soft: #06302e;
-    --accent-text: #5eead4;
+    --accent-deep: #1e40af;
+    --accent-soft: #0a1f4d;
+    --accent-text: #6d9bff;
     --error: #f2a5a5;
   }
 
@@ -1559,7 +1559,7 @@ html:not(.js) .detail-list .value a {
   }
 
   html:not(.js) .card-v {
-    color: #5eead4;
+    color: #6d9bff;
   }
 
   html:not(.js) .card-v:hover {
