@@ -12,6 +12,7 @@
     emailCta: document.getElementById("email-cta"),
     platformHint: document.getElementById("platform-hint"),
     qrCta: document.getElementById("qr-cta"),
+    vcfCta: document.getElementById("vcf-cta"),
     detailList: document.getElementById("detail-list"),
     detailsFold: document.getElementById("details-fold"),
     footerName: document.getElementById("footer-name"),
@@ -770,9 +771,18 @@
           copyToClipboard(contactPlainText(contact), "Contact details copied");
         },
       });
+      // Same data as the QR, usable on this phone without scanning:
+      // download the full .vcf, opening it from the notification imports
+      // the contact (photo included).
+      if (els.vcfCta) {
+        els.vcfCta.hidden = false;
+        els.vcfCta.addEventListener("click", () => {
+          showToast("Saved — open the downloaded file to import");
+        });
+      }
       wireQuickActions(contact);
       els.platformHint.textContent =
-        "Opens the share sheet — pick Contacts to save everything. If unavailable, the pre-filled editor opens instead.";
+        "Opens the share sheet — pick Contacts to save everything. Blocked? Save the .vcf file and open it from your downloads.";
       return;
     }
 
