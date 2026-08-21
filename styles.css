@@ -462,6 +462,10 @@ html:not(.js) .theme-toggle {
   /* Content-driven height so lines never clip (esp. iPhone / dense layouts) */
   aspect-ratio: auto;
   perspective: 1200px;
+  border-radius: calc(var(--card-radius) + 2px);
+  /* Drop shadow on the outer layer (not inside the flip's backface layer)
+     so it never gets clipped at compositing boundaries */
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.4);
   transform: rotate3d(0.4, -1, 0.1, 8deg);
   transition: transform 0.55s var(--ease);
   /* "backwards" (not "both"): a filled end keyframe would permanently
@@ -490,11 +494,14 @@ html:not(.js) .theme-toggle {
 .biz-card::before {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: -2px;
   z-index: -1;
-  border-radius: calc(var(--card-radius) + 3px);
-  background: hsl(calc(var(--hue) * 1deg) 100% 55%);
-  filter: blur(20px);
+  border-radius: calc(var(--card-radius) + 2px);
+  /* Pure box-shadow glow: filter: blur() layers get clipped to a square
+     under the 3D tilt and caused a gray corner artifact */
+  box-shadow:
+    0 0 18px 2px hsla(calc(var(--hue) * 1deg) 100% 55% / 0.8),
+    0 0 48px 10px hsla(calc(var(--hue) * 1deg) 100% 55% / 0.45);
   opacity: 0.5;
   animation: hue-animation var(--glow-speed) linear infinite;
   pointer-events: none;
@@ -518,6 +525,10 @@ html:not(.js) .theme-toggle {
   transform: rotateY(0deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  /* Round + clip the compositing layer itself: its rectangular bounds
+     bled through at the corners under the 3D tilt */
+  border-radius: calc(var(--card-radius) + 2px);
+  overflow: hidden;
 }
 
 .card-back {
@@ -526,16 +537,28 @@ html:not(.js) .theme-toggle {
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  /* Fully hide when not flipped: under the 3D tilt the back layer's
+     antialiased edge leaked as a gray corner artifact. The delay keeps
+     the reveal in sync with the flip's halfway point. */
+  visibility: hidden;
+  transition: visibility 0s 0.33s;
+  border-radius: calc(var(--card-radius) + 2px);
+  overflow: hidden;
+}
+
+.biz-card.flipped .card-back {
+  visibility: visible;
+  transition: visibility 0s;
 }
 
 .card-back .card-face {
-  height: 100%;
+  height: calc(100% - 4px);
 }
 
 /* Cursor/gyro gloss reflection sweeping over the face */
 .card-gloss {
   position: absolute;
-  inset: 0;
+  inset: 2px;
   z-index: 2;
   border-radius: var(--card-radius);
   pointer-events: none;
@@ -551,8 +574,8 @@ html:not(.js) .theme-toggle {
 
 .card-edge {
   position: absolute;
-  inset: -2px;
-  border-radius: calc(var(--card-radius) + 2px);
+  inset: 0;
+  border-radius: inherit;
   /* Hue-cycling spot circling the border — the pen's "sharp" glow edge */
   background:
     #292929
@@ -566,9 +589,9 @@ html:not(.js) .theme-toggle {
   animation:
     hue-animation var(--glow-speed) linear infinite,
     rotate-bg var(--glow-speed) linear infinite;
-  box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.4),
-    0 0 26px hsla(calc(var(--hue) * 1deg) 100% 60% / 0.28);
+  /* No box-shadow here: soft effects inside the flip's backface layer
+     get clipped at the layer edge and cause corner artifacts.
+     The drop shadow lives on .biz-card, the glow on its ::before. */
 }
 
 /* Periodic glint travelling along the foil edge (visible on the 2px ring) */
@@ -603,6 +626,7 @@ html:not(.js) .theme-toggle {
   position: relative;
   z-index: 1;
   height: auto;
+  margin: 2px;
   border-radius: var(--card-radius);
   padding: clamp(1.15rem, 2.4vw, 1.5rem) clamp(1.15rem, 2.5vw, 1.55rem) 1.2rem;
   display: grid;
