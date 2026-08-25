@@ -749,29 +749,11 @@ html:not(.js) .theme-toggle {
 }
 
 .card-brand-row {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.55rem;
+  flex: 1 1 auto;
   min-width: 0;
-}
-
-.card-logo {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.12);
-  padding: 0.28rem;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
-}
-
-.card-org {
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  /* Lowercase: it's a domain now, not a company wordmark */
-  text-transform: lowercase;
-  color: #93a1b8;
+  padding-top: 0.35rem;
 }
 
 .card-photo {
@@ -793,12 +775,12 @@ html:not(.js) .theme-toggle {
   padding-top: 0.15rem;
 }
 
-/* Bleedingstar lockup replaces logo + name (white SVG on the dark card) */
+/* Bleedingstar lockup as the top-left brand mark (white SVG on the dark card) */
 .card-lockup {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
   display: block;
+  width: 100%;
+  max-width: 196px;
+  height: auto;
 }
 
 .card-name {
